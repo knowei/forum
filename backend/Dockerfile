@@ -1,6 +1,7 @@
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY pom.xml .
+COPY pom.xml settings.xml ./
+COPY settings.xml /usr/share/maven/conf/settings.xml
 RUN mvn dependency:go-offline -q
 COPY src ./src
 RUN mvn package -DskipTests -q
