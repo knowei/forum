@@ -1,0 +1,26 @@
+server:
+  port: 8092
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/forum_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+file:
+  upload-path: ./uploads
+
+mail:
+  host: smtp.qq.com
+  port: 587
+  username: 2994172661@qq.com
+  password: nvbrttnydlzldfhd

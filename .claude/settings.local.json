@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(npm --prefix frontend install)",
+      "Bash(npm --prefix frontend run build)",
+      "Bash(mvn -q -DskipTests package)",
+      "Bash(mvn *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5174/)",
+      "Bash(python3 -c \"from PIL import Image; print\\('pillow OK'\\)\")",
+      "Bash(python -c \"from PIL import Image; print\\('pillow OK'\\)\")",
+      "Bash(python *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8092/api/auth/send-code -X POST -H \"Content-Type: application/json\" -d '{\"email\":\"test@test.com\"}')",
+      "Bash(./mvnw dependency:tree -Dincludes=org.springframework.boot:spring-boot-starter-mail)",
+      "Bash(jps -l)",
+      "Bash(kill 43408)",
+      "Bash(taskkill /F /PID 43408)",
+      "Bash(curl *)",
+      "Bash(awk '{print $1}')",
+      "Bash(xargs -I{} taskkill /F /PID {})",
+      "Bash(netstat -ano)",
+      "Bash(wmic process *)",
+      "Bash(redis-cli ping *)",
+      "Bash(awk '{print $5}')",
+      "Bash(awk '{print $NF}')",
+      "Bash(taskkill /F /PID 43224)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}

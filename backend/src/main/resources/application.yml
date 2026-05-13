@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: forum-backend
+  profiles:
+    active: dev
+  jackson:
+    default-property-inclusion: non_null
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  global-config:
+    banner: false
+
+jwt:
+  secret: change-this-secret-key-change-this-secret-key
+  expiration: 604800000

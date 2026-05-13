@@ -1,0 +1,333 @@
+<template>
+  <div class="detail-page" v-loading="loading">
+    <template v-if="resource">
+      <section class="page-card detail-header">
+        <el-breadcrumb separator=">">
+          <el-breadcrumb-item to="/">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>资源详情</el-breadcrumb-item>
+        </el-breadcrumb>
+
+        <div class="detail-header__top">
+          <div>
+            <h1 class="detail-title">{{ resource.title }}</h1>
+            <p v-if="resource.description" class="resource-summary">{{ resource.description }}</p>
+          </div>
+          <el-tag :type="statusType(resource.status)" effect="light">{{ statusText(resource.status) }}</el-tag>
+        </div>
+
+        <div v-if="tags.length" class="detail-tags">
+          <el-tag v-for="tag in tags" :key="tag" effect="plain">{{ tag }}</el-tag>
+        </div>
+
+        <div class="resource-meta">
+          <el-tag size="small" effect="plain">{{ resource.type === 1 ? '文章' : '资源' }}</el-tag>
+          <span>作者：{{ resource.authorNickname || '匿名用户' }}</span>
+          <span>浏览：{{ resource.viewCount || 0 }}</span>
+          <span>评论：{{ resource.commentCount || 0 }}</span>
+          <span>创建时间：{{ formatDate(resource.createTime) }}</span>
+          <span>更新时间：{{ formatDate(resource.updateTime) }}</span>
+        </div>
+      </section>
+
+      <div class="detail-layout">
+        <article class="page-card detail-article markdown-body" v-html="renderedContent"></article>
+
+        <aside class="panel-card detail-side">
+          <div class="detail-side__section">
+            <div class="detail-side__label">作者</div>
+            <div class="author-info">
+              <el-avatar
+                v-if="resource.authorAvatar"
+                :src="resource.authorAvatar"
+                :size="48"
+              />
+              <el-avatar v-else :size="48">{{ resource.authorNickname?.[0] || '?' }}</el-avatar>
+              <div class="author-info__text">
+                <span class="author-info__name">{{ resource.authorNickname }}</span>
+              </div>
+            </div>
+          </div>
+
+          <template v-if="resource.type === 0">
+            <div class="detail-side__section">
+              <div class="detail-side__label">下载链接</div>
+              <div class="detail-side__actions">
+                <el-button type="primary" @click="openLink" style="flex:1">立即前往</el-button>
+                <el-button @click="copyText(resource.downloadLink, '下载链接已复制')" style="flex:1">复制链接</el-button>
+              </div>
+            </div>
+
+            <div class="detail-side__section">
+              <div class="detail-side__item">
+                <span class="detail-side__label">提取码</span>
+                <div class="detail-side__value-row">
+                  <span>{{ resource.extractCode || '无' }}</span>
+                  <el-button v-if="resource.extractCode" link type="primary" @click="copyText(resource.extractCode, '提取码已复制')">复制</el-button>
+                </div>
+              </div>
+
+              <div class="detail-side__item">
+                <span class="detail-side__label">解压码</span>
+                <div class="detail-side__value-row">
+                  <span>{{ resource.unzipPassword || '无' }}</span>
+                  <el-button v-if="resource.unzipPassword" link type="primary" @click="copyText(resource.unzipPassword, '解压码已复制')">复制</el-button>
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <div class="detail-side__section">
+            <el-button type="warning" plain size="small" @click="handleReport" style="width: 100%">
+              报告资源过期
+            </el-button>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Comments Section -->
+      <section class="page-card comment-section">
+        <h3 class="comment-heading">评论（{{ resource.commentCount || 0 }}）</h3>
+
+        <div v-if="userStore.isLogin" class="comment-form">
+          <el-input
+            v-model="commentContent"
+            type="textarea"
+            :rows="3"
+            placeholder="写下你的评论..."
+            maxlength="1000"
+            show-word-limit
+          />
+          <div class="comment-form__actions">
+            <el-button type="primary" :loading="commentLoading" @click="handleComment">发表评论</el-button>
+          </div>
+        </div>
+        <div v-else class="comment-login-tip">
+          <el-button link type="primary" @click="openAuth(true)">登录</el-button>后可以发表评论
+        </div>
+
+        <div v-if="comments.length" class="comment-list">
+          <div v-for="item in comments" :key="item.id" class="comment-item">
+            <el-avatar v-if="item.userAvatar" :src="item.userAvatar" :size="36" />
+            <el-avatar v-else :size="36">{{ item.userNickname?.[0] || '?' }}</el-avatar>
+            <div class="comment-item__body">
+              <div class="comment-item__header">
+                <span class="comment-item__user">{{ item.userNickname }}</span>
+                <span class="comment-item__time">{{ formatDate(item.createTime) }}</span>
+              </div>
+              <div class="comment-item__content">{{ item.content }}</div>
+            </div>
+          </div>
+        </div>
+
+        <el-empty v-else-if="!commentLoading" description="暂无评论" :image-size="60" />
+      </section>
+    </template>
+
+    <el-empty v-else-if="!loading" description="资源不存在或当前无权限查看" />
+  </div>
+
+  <AuthDialog v-if="showAuth" v-model:visible="showAuth" :login-mode="true" @success="showAuth = false" />
+</template>
+
+<script setup>
+import DOMPurify from 'dompurify'
+import MarkdownIt from 'markdown-it'
+import hljs from 'highlight.js'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { getResourceDetail } from '@/api/resource'
+import { getCommentList, createComment } from '@/api/comment'
+import { reportResource } from '@/api/report'
+import { useUserStore } from '@/stores/user'
+import AuthDialog from '@/components/common/AuthDialog.vue'
+
+const route = useRoute()
+const userStore = useUserStore()
+const loading = ref(false)
+const resource = ref(null)
+const comments = ref([])
+const commentContent = ref('')
+const commentLoading = ref(false)
+const showAuth = ref(false)
+
+const md = new MarkdownIt({
+  html: false,
+  linkify: true,
+  typographer: true,
+  highlight(str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      return `<pre class="hljs"><code>${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`
+    }
+    return `<pre class="hljs"><code>${md.utils.escapeHtml(str)}</code></pre>`
+  }
+})
+
+const renderedContent = computed(() => DOMPurify.sanitize(md.render(resource.value?.content || '')))
+const tags = computed(() => (resource.value?.tags || '').split(',').map((item) => item.trim()).filter(Boolean))
+
+function formatDate(value) {
+  return value ? value.replace('T', ' ') : '-'
+}
+
+function statusText(status) {
+  if (status === 1) return '已发布'
+  if (status === 0) return '待审核'
+  if (status === 2) return '已驳回'
+  return '未知状态'
+}
+
+function statusType(status) {
+  if (status === 1) return 'success'
+  if (status === 0) return 'warning'
+  if (status === 2) return 'danger'
+  return 'info'
+}
+
+function openAuth(loginMode) {
+  showAuth.value = true
+}
+
+async function copyText(value, message) {
+  await navigator.clipboard.writeText(value)
+  ElMessage.success(message)
+}
+
+function openLink() {
+  window.open(resource.value.downloadLink, '_blank', 'noopener,noreferrer')
+}
+
+async function handleReport() {
+  if (!userStore.isLogin) {
+    showAuth.value = true
+    return
+  }
+  try {
+    const { value } = await ElMessageBox.prompt('请描述资源过期原因', '报告资源过期', {
+      inputPlaceholder: '例如：下载链接已失效',
+      inputType: 'textarea',
+      inputValidator: (v) => (v ? true : '请输入原因')
+    })
+    await reportResource(resource.value.id, value)
+    ElMessage.success('已提交报告，我们会尽快处理')
+  } catch {
+    // cancelled
+  }
+}
+
+async function handleComment() {
+  if (!commentContent.value.trim()) return
+  commentLoading.value = true
+  try {
+    await createComment(resource.value.id, commentContent.value.trim(), null)
+    ElMessage.success('评论发表成功')
+    commentContent.value = ''
+    await fetchComments()
+    if (resource.value) resource.value.commentCount = (resource.value.commentCount || 0) + 1
+  } finally {
+    commentLoading.value = false
+  }
+}
+
+async function fetchComments() {
+  try {
+    comments.value = await getCommentList(route.params.id)
+  } catch {
+    comments.value = []
+  }
+}
+
+async function fetchDetail() {
+  loading.value = true
+  try {
+    resource.value = await getResourceDetail(route.params.id)
+  } finally {
+    loading.value = false
+  }
+}
+
+async function loadAll() {
+  await Promise.all([fetchDetail(), fetchComments()])
+}
+
+watch(() => route.params.id, loadAll)
+onMounted(loadAll)
+</script>
+
+<style scoped>
+.comment-section {
+  margin-top: 20px;
+}
+
+.comment-heading {
+  margin: 0 0 20px;
+  font-size: 18px;
+}
+
+.comment-form {
+  margin-bottom: 24px;
+}
+
+.comment-form__actions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.comment-login-tip {
+  margin-bottom: 24px;
+  color: #9ca3af;
+  font-size: 14px;
+  text-align: center;
+  padding: 24px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.comment-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.comment-item:last-child {
+  border-bottom: none;
+}
+
+.comment-item__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.comment-item__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.comment-item__user {
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+}
+
+.comment-item__time {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.comment-item__content {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4b5563;
+  word-break: break-word;
+}
+</style>
