@@ -35,13 +35,16 @@ public class ResourceServiceImpl implements ResourceService {
     private final CategoryMapper categoryMapper;
     private final UserLikeMapper userLikeMapper;
     private final UserCollectMapper userCollectMapper;
+    private final com.forum.service.NotificationService notificationService;
 
     public ResourceServiceImpl(ResourceMapper resourceMapper, CategoryMapper categoryMapper,
-                               UserLikeMapper userLikeMapper, UserCollectMapper userCollectMapper) {
+                               UserLikeMapper userLikeMapper, UserCollectMapper userCollectMapper,
+                               com.forum.service.NotificationService notificationService) {
         this.resourceMapper = resourceMapper;
         this.categoryMapper = categoryMapper;
         this.userLikeMapper = userLikeMapper;
         this.userCollectMapper = userCollectMapper;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -192,6 +195,14 @@ public class ResourceServiceImpl implements ResourceService {
         }
         resource.setStatus(resourceAuditDTO.getStatus());
         resourceMapper.updateById(resource);
+
+        String statusText = resourceAuditDTO.getStatus() == 1 ? "已通过" : "未通过";
+        String reason = resourceAuditDTO.getStatus() == 2 && resourceAuditDTO.getRejectReason() != null
+                ? "，原因：" + resourceAuditDTO.getRejectReason() : "";
+        notificationService.create(resource.getUserId(), "RESOURCE_AUDITED",
+                "资源审核" + statusText,
+                "您的资源「" + resource.getTitle() + "」审核" + statusText + reason,
+                resource.getId());
     }
 
     private Resource buildViewCountResource(Long id, Integer viewCount) {

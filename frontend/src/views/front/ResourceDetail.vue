@@ -93,7 +93,7 @@
             v-model="commentContent"
             type="textarea"
             :rows="3"
-            placeholder="写下你的评论..."
+            placeholder="写下你的评论…"
             maxlength="1000"
             show-word-limit
           />
@@ -107,7 +107,7 @@
 
         <div v-if="commentTree.length" class="comment-list">
           <div v-for="top in commentTree" :key="top.id" class="comment-item">
-            <el-avatar v-if="top.userAvatar" :src="top.userAvatar" :size="36" />
+            <el-avatar v-if="top.userAvatar" :src="top.userAvatar" :size="36" loading="lazy" />
             <el-avatar v-else :size="36">{{ top.userNickname?.[0] || '?' }}</el-avatar>
             <div class="comment-item__body">
               <div class="comment-item__header">
@@ -122,7 +122,7 @@
               <!-- Replies -->
               <div v-if="top.replies?.length" class="comment-replies">
                 <div v-for="reply in top.replies" :key="reply.id" class="comment-item comment-item--reply">
-                  <el-avatar v-if="reply.userAvatar" :src="reply.userAvatar" :size="28" />
+                  <el-avatar v-if="reply.userAvatar" :src="reply.userAvatar" :size="28" loading="lazy" />
                   <el-avatar v-else :size="28">{{ reply.userNickname?.[0] || '?' }}</el-avatar>
                   <div class="comment-item__body">
                     <div class="comment-item__header">
@@ -162,10 +162,27 @@
 
   <!-- Back to Top -->
   <Transition name="fade">
-    <button v-if="showBackTop" class="back-top-btn" @click="scrollToTop">
-      <el-icon :size="20"><ArrowUp /></el-icon>
+    <button v-if="showBackTop" class="back-top-btn" aria-label="返回顶部" @click="scrollToTop">
+      <el-icon :size="20" aria-hidden="true"><ArrowUp /></el-icon>
     </button>
   </Transition>
+
+  <!-- Like & Collect Float -->
+    <div v-if="resource" class="action-float">
+      <button class="action-float__btn" :class="{ active: resource?.liked }" aria-label="点赞" @click="handleLike">
+        <el-icon :size="20" aria-hidden="true">
+          <component :is="resource?.liked ? GoodsFilled : Goods" />
+        </el-icon>
+        <span>{{ resource?.likeCount ?? 0 }}</span>
+      </button>
+      <div class="action-float__divider" />
+      <button class="action-float__btn" :class="{ active: resource?.collected }" aria-label="收藏" @click="handleCollect">
+        <el-icon :size="20" aria-hidden="true">
+          <component :is="resource?.collected ? StarFilled : Star" />
+        </el-icon>
+        <span>{{ resource?.collectCount ?? 0 }}</span>
+      </button>
+    </div>
 
   <AuthDialog v-if="showAuth" v-model:visible="showAuth" :login-mode="true" @success="showAuth = false" />
 </template>
@@ -174,11 +191,11 @@
 import DOMPurify from 'dompurify'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
-import { ArrowUp } from '@element-plus/icons-vue'
+import { ArrowUp, Goods, GoodsFilled, Star, StarFilled } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { getResourceDetail } from '@/api/resource'
+import { getResourceDetail, likeResource, unlikeResource, collectResource, uncollectResource } from '@/api/resource'
 import { getCommentList, createComment } from '@/api/comment'
 import { reportResource } from '@/api/report'
 import { useUserStore } from '@/stores/user'
@@ -246,6 +263,36 @@ function statusType(status) {
 
 function openAuth(loginMode) {
   showAuth.value = true
+}
+
+async function handleLike() {
+  if (!userStore.isLogin) { showAuth.value = true; return }
+  try {
+    if (resource.value.liked) {
+      await unlikeResource(resource.value.id)
+      resource.value.liked = false
+      resource.value.likeCount = Math.max(0, (resource.value.likeCount || 0) - 1)
+    } else {
+      await likeResource(resource.value.id)
+      resource.value.liked = true
+      resource.value.likeCount = (resource.value.likeCount || 0) + 1
+    }
+  } catch { /* handled by interceptor */ }
+}
+
+async function handleCollect() {
+  if (!userStore.isLogin) { showAuth.value = true; return }
+  try {
+    if (resource.value.collected) {
+      await uncollectResource(resource.value.id)
+      resource.value.collected = false
+      resource.value.collectCount = Math.max(0, (resource.value.collectCount || 0) - 1)
+    } else {
+      await collectResource(resource.value.id)
+      resource.value.collected = true
+      resource.value.collectCount = (resource.value.collectCount || 0) + 1
+    }
+  } catch { /* handled by interceptor */ }
 }
 
 async function copyText(value, message) {
@@ -456,5 +503,67 @@ onUnmounted(() => {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+
+/* ---- Like & Collect Float ---- */
+.action-float {
+  position: fixed;
+  right: 32px;
+  bottom: 110px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1);
+}
+
+.action-float__btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 52px;
+  padding: 6px 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1.2;
+  transition: background 0.2s, color 0.2s;
+}
+
+.action-float__btn:hover {
+  background: #f3f4f6;
+  color: #409eff;
+}
+
+.action-float__btn.active {
+  color: #e74c3c;
+}
+
+.action-float__btn.active:last-child {
+  color: #e6a23c;
+}
+
+.action-float__divider {
+  width: 32px;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .action-float {
+    transition: none;
+  }
+  .action-float__btn {
+    transition: none;
+  }
 }
 </style>

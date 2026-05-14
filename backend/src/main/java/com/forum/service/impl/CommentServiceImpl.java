@@ -21,10 +21,16 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentMapper commentMapper;
     private final ResourceMapper resourceMapper;
+    private final com.forum.service.NotificationService notificationService;
+    private final com.forum.mapper.UserMapper userMapper;
 
-    public CommentServiceImpl(CommentMapper commentMapper, ResourceMapper resourceMapper) {
+    public CommentServiceImpl(CommentMapper commentMapper, ResourceMapper resourceMapper,
+                              com.forum.service.NotificationService notificationService,
+                              com.forum.mapper.UserMapper userMapper) {
         this.commentMapper = commentMapper;
         this.resourceMapper = resourceMapper;
+        this.notificationService = notificationService;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -59,6 +65,23 @@ public class CommentServiceImpl implements CommentService {
         resourceMapper.update(null, new com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper<Resource>()
                 .eq(Resource::getId, resourceId)
                 .setSql("comment_count = comment_count + 1"));
+
+        com.forum.entity.User currentUser = userMapper.selectById(loginUser.getId());
+        String nickname = currentUser != null ? currentUser.getNickname() : loginUser.getUsername();
+        if (parentId != null) {
+            Comment parent = commentMapper.selectById(parentId);
+            if (parent != null && !parent.getUserId().equals(loginUser.getId())) {
+                notificationService.create(parent.getUserId(), "COMMENT_REPLY",
+                        "收到新的回复",
+                        nickname + " 回复了您的评论：「" + (content.length() > 50 ? content.substring(0, 50) + "…" : content) + "」",
+                        resourceId);
+            }
+        } else if (!resource.getUserId().equals(loginUser.getId())) {
+            notificationService.create(resource.getUserId(), "NEW_COMMENT",
+                    "收到新的评论",
+                    nickname + " 评论了您的资源「" + resource.getTitle() + "」：" + (content.length() > 50 ? content.substring(0, 50) + "…" : content),
+                    resourceId);
+        }
     }
 
     @Override

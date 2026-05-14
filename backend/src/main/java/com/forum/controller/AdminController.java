@@ -9,8 +9,10 @@ import com.forum.vo.OnlineUserVO;
 import com.forum.vo.ResourceListItemVO;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,18 +34,21 @@ public class AdminController {
     private final com.forum.mapper.ResourceReportMapper reportMapper;
     private final com.forum.service.ReportService reportService;
     private final com.forum.service.OnlineUserService onlineUserService;
+    private final com.forum.service.CategoryService categoryService;
 
     public AdminController(ResourceService resourceService, com.forum.mapper.UserMapper userMapper,
                            com.forum.mapper.ResourceMapper resourceMapper,
                            com.forum.mapper.ResourceReportMapper reportMapper,
                            com.forum.service.ReportService reportService,
-                           com.forum.service.OnlineUserService onlineUserService) {
+                           com.forum.service.OnlineUserService onlineUserService,
+                           com.forum.service.CategoryService categoryService) {
         this.resourceService = resourceService;
         this.userMapper = userMapper;
         this.resourceMapper = resourceMapper;
         this.reportMapper = reportMapper;
         this.reportService = reportService;
         this.onlineUserService = onlineUserService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/statistics")
@@ -117,6 +122,29 @@ public class AdminController {
         }
         user.setStatus(body.get("status"));
         userMapper.updateById(user);
+        return Result.success();
+    }
+
+    @GetMapping("/category/list")
+    public Result<List<com.forum.entity.Category>> categoryList() {
+        return Result.success(categoryService.listAll());
+    }
+
+    @PostMapping("/category")
+    public Result<Void> createCategory(@Valid @RequestBody com.forum.dto.CategoryCreateDTO dto) {
+        categoryService.create(dto.getName(), dto.getDescription(), dto.getSort());
+        return Result.success();
+    }
+
+    @PutMapping("/category/{id}")
+    public Result<Void> updateCategory(@PathVariable Integer id, @Valid @RequestBody com.forum.dto.CategoryCreateDTO dto) {
+        categoryService.update(id, dto.getName(), dto.getDescription(), dto.getSort(), dto.getStatus());
+        return Result.success();
+    }
+
+    @DeleteMapping("/category/{id}")
+    public Result<Void> deleteCategory(@PathVariable Integer id) {
+        categoryService.delete(id);
         return Result.success();
     }
 }

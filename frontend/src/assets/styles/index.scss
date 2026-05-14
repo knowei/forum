@@ -15,6 +15,7 @@ body {
   margin: 0;
   background: #f5f7fb;
   color: #1f2937;
+  -webkit-tap-highlight-color: transparent;
 }
 
 a {
@@ -91,10 +92,30 @@ a {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .page-card,
+  .panel-card {
+    animation: none;
+  }
+
+  .fade-slide-enter-active,
+  .fade-slide-leave-active,
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: none;
+  }
+
+  .back-top-btn {
+    transition: none;
+  }
+}
+
 .resource-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+  content-visibility: auto;
+  contain-intrinsic-size: 480px;
 }
 
 .resource-card {
@@ -122,6 +143,7 @@ a {
 .resource-card__cover,
 .resource-card__cover-placeholder {
   width: 100%;
+  height: auto;
   aspect-ratio: 16 / 9;
   object-fit: cover;
   display: block;

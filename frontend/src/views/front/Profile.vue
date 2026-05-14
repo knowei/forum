@@ -83,6 +83,41 @@
             </el-table-column>
           </el-table>
         </el-tab-pane>
+
+        <el-tab-pane label="个人设置" name="settings">
+          <div class="settings-form">
+            <h3 class="settings-section-title">基本资料</h3>
+            <el-form :model="settingsForm" label-width="100px">
+              <el-form-item label="昵称">
+                <el-input v-model="settingsForm.nickname" maxlength="50" />
+              </el-form-item>
+              <el-form-item label="邮箱">
+                <el-input v-model="settingsForm.email" maxlength="100" />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" :loading="savingInfo" @click="handleSaveInfo">保存</el-button>
+              </el-form-item>
+            </el-form>
+
+            <el-divider />
+
+            <h3 class="settings-section-title">修改密码</h3>
+            <el-form :model="passwordForm" label-width="100px">
+              <el-form-item label="原密码">
+                <el-input v-model="passwordForm.oldPassword" type="password" show-password />
+              </el-form-item>
+              <el-form-item label="新密码">
+                <el-input v-model="passwordForm.newPassword" type="password" show-password minlength="6" maxlength="20" />
+              </el-form-item>
+              <el-form-item label="确认密码">
+                <el-input v-model="passwordForm.confirmPassword" type="password" show-password />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" :loading="savingPassword" @click="handleSavePassword">修改密码</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-tab-pane>
       </el-tabs>
     </section>
   </div>
@@ -94,7 +129,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { getMyResources, getMyCollections, deleteResource } from '@/api/resource'
 import { uploadImage } from '@/api/resource'
-import { updateUserAvatar } from '@/api/user'
+import { updateUserAvatar, updateUserInfo, updatePassword } from '@/api/user'
 
 const userStore = useUserStore()
 const loading = ref(false)
@@ -104,6 +139,11 @@ const resourceFilter = ref('all')
 
 const collections = ref([])
 const colLoading = ref(false)
+
+const settingsForm = ref({ nickname: '', email: '' })
+const savingInfo = ref(false)
+const passwordForm = ref({ oldPassword: '', newPassword: '', confirmPassword: '' })
+const savingPassword = ref(false)
 
 const filteredList = computed(() => {
   if (resourceFilter.value === 'all') return list.value
@@ -146,6 +186,66 @@ async function handleAvatarUpload(file) {
   return false
 }
 
+watch(activeTab, (tab) => {
+  if (tab === 'settings') {
+    settingsForm.value = {
+      nickname: userStore.userInfo?.nickname || '',
+      email: userStore.userInfo?.email || ''
+    }
+  }
+  if (tab === 'collections' && !collections.value.length) {
+    fetchCollections()
+  }
+})
+
+async function handleSaveInfo() {
+  if (!settingsForm.value.nickname.trim()) {
+    ElMessage.warning('昵称不能为空')
+    return
+  }
+  savingInfo.value = true
+  try {
+    await updateUserInfo({
+      nickname: settingsForm.value.nickname.trim(),
+      email: settingsForm.value.email.trim()
+    })
+    await userStore.fetchUserInfo()
+    ElMessage.success('保存成功')
+  } catch {
+    // interceptor handles message
+  } finally {
+    savingInfo.value = false
+  }
+}
+
+async function handleSavePassword() {
+  if (!passwordForm.value.oldPassword || !passwordForm.value.newPassword) {
+    ElMessage.warning('请填写完整')
+    return
+  }
+  if (passwordForm.value.newPassword.length < 6) {
+    ElMessage.warning('新密码不能少于6位')
+    return
+  }
+  if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+    ElMessage.warning('两次密码不一致')
+    return
+  }
+  savingPassword.value = true
+  try {
+    await updatePassword({
+      oldPassword: passwordForm.value.oldPassword,
+      newPassword: passwordForm.value.newPassword
+    })
+    ElMessage.success('密码修改成功')
+    passwordForm.value = { oldPassword: '', newPassword: '', confirmPassword: '' }
+  } catch {
+    // interceptor handles message
+  } finally {
+    savingPassword.value = false
+  }
+}
+
 async function handleDelete(row) {
   try {
     await ElMessageBox.confirm(`确定要删除「${row.title}」吗？删除后不可恢复。`, '确认删除', {
@@ -179,16 +279,20 @@ async function fetchCollections() {
   }
 }
 
-watch(activeTab, (tab) => {
-  if (tab === 'collections' && !collections.value.length) {
-    fetchCollections()
-  }
-})
-
 onMounted(fetchMyResources)
 </script>
 
 <style scoped>
+.settings-form {
+  max-width: 480px;
+}
+
+.settings-section-title {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .profile-header {
   display: flex;
   align-items: center;

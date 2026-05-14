@@ -8,6 +8,7 @@
 import { onBeforeUnmount, onMounted, watch } from 'vue'
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
+import { getToken } from '@/utils/auth'
 
 const props = defineProps({
   modelValue: {
@@ -39,9 +40,22 @@ onMounted(() => {
     toolbar: [
       'emoji', 'headings', 'bold', 'italic', 'strike', '|',
       'quote', 'line', 'list', 'ordered-list', 'check', '|',
-      'code', 'inline-code', 'table', 'link', '|',
+      'code', 'inline-code', 'table', 'link', 'image', '|',
       'undo', 'redo', '|', 'edit-mode', 'outline', 'preview', 'fullscreen'
     ],
+    upload: {
+      url: '/api/upload/image',
+      headers: { Authorization: `Bearer ${getToken()}` },
+      fieldName: 'file',
+      extraData: { scene: 'content' },
+      format(files, responseText) {
+        const res = JSON.parse(responseText)
+        if (res.code === 200) {
+          return JSON.stringify({ code: 0, data: { url: res.data.url, originalURL: res.data.url } })
+        }
+        return JSON.stringify({ code: -1, msg: res.message || '上传失败' })
+      }
+    },
     after() {
       editor.setValue(props.modelValue || '')
     },

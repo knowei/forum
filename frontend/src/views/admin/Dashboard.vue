@@ -2,7 +2,7 @@
   <div class="admin-grid">
     <div class="stat-card">
       <div class="stat-card__icon stat-card__icon--blue">
-        <el-icon :size="28"><User /></el-icon>
+        <el-icon :size="28" aria-hidden="true"><User /></el-icon>
       </div>
       <div class="stat-card__body">
         <div class="stat-card__value">{{ stats.userCount }}</div>
@@ -11,7 +11,7 @@
     </div>
     <div class="stat-card">
       <div class="stat-card__icon stat-card__icon--green">
-        <el-icon :size="28"><Document /></el-icon>
+        <el-icon :size="28" aria-hidden="true"><Document /></el-icon>
       </div>
       <div class="stat-card__body">
         <div class="stat-card__value">{{ stats.resourceCount }}</div>
@@ -20,7 +20,7 @@
     </div>
     <div class="stat-card">
       <div class="stat-card__icon stat-card__icon--orange">
-        <el-icon :size="28"><Clock /></el-icon>
+        <el-icon :size="28" aria-hidden="true"><Clock /></el-icon>
       </div>
       <div class="stat-card__body">
         <div class="stat-card__value">{{ stats.pendingResourceCount }}</div>
@@ -29,7 +29,7 @@
     </div>
     <div class="stat-card stat-card--clickable" @click="showOnlineUsers = true">
       <div class="stat-card__icon stat-card__icon--purple">
-        <el-icon :size="28"><Avatar /></el-icon>
+        <el-icon :size="28" aria-hidden="true"><Avatar /></el-icon>
       </div>
       <div class="stat-card__body">
         <div class="stat-card__value">{{ stats.onlineCount }}</div>

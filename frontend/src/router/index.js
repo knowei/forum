@@ -11,6 +11,7 @@ const router = createRouter({
       component: FrontLayout,
       children: [
         { path: '', name: 'home', component: () => import('@/views/front/Home.vue') },
+        { path: 'notes', name: 'notes', component: () => import('@/views/front/Notes.vue') },
         { path: 'resource/:id', name: 'resource-detail', component: () => import('@/views/front/ResourceDetail.vue') },
         { path: 'publish', name: 'publish', meta: { requiresAuth: true }, component: () => import('@/views/front/Publish.vue') },
         { path: 'search', name: 'search', component: () => import('@/views/front/Search.vue') },
@@ -28,7 +29,8 @@ const router = createRouter({
         { path: '', name: 'admin-dashboard', component: () => import('@/views/admin/Dashboard.vue') },
         { path: 'resources', name: 'admin-resources', component: () => import('@/views/admin/ResourceManage.vue') },
         { path: 'reports', name: 'admin-reports', component: () => import('@/views/admin/ReportManage.vue') },
-        { path: 'users', name: 'admin-users', component: () => import('@/views/admin/UserManage.vue') }
+        { path: 'users', name: 'admin-users', component: () => import('@/views/admin/UserManage.vue') },
+        { path: 'categories', name: 'admin-categories', component: () => import('@/views/admin/CategoryManage.vue') }
       ]
     }
   ],

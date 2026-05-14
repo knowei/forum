@@ -36,6 +36,22 @@ export function deleteResource(id) {
   return request.delete(`/resource/${id}`)
 }
 
+export function likeResource(id) {
+  return request.post(`/resource/${id}/like`)
+}
+
+export function unlikeResource(id) {
+  return request.delete(`/resource/${id}/like`)
+}
+
+export function collectResource(id) {
+  return request.post(`/resource/${id}/collect`)
+}
+
+export function uncollectResource(id) {
+  return request.delete(`/resource/${id}/collect`)
+}
+
 export function uploadImage(file, scene = 'cover') {
   const formData = new FormData()
   formData.append('file', file)

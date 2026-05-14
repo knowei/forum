@@ -13,9 +13,9 @@
         :to="`/resource/${item.id}`"
       >
         <div class="resource-card__cover-wrap">
-          <img v-if="item.cover" :src="item.cover" class="resource-card__cover" alt="" />
+          <img v-if="item.cover" :src="item.cover" class="resource-card__cover" alt="" loading="lazy" width="800" height="450" />
           <div v-else class="resource-card__cover-placeholder">
-            <el-icon :size="28"><Picture /></el-icon>
+            <el-icon :size="28" aria-hidden="true"><Picture /></el-icon>
           </div>
         </div>
         <div class="resource-card__body">

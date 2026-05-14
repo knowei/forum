@@ -12,4 +12,6 @@ public class ResourceAuditDTO {
     @Min(1)
     @Max(2)
     private Integer status;
+
+    private String rejectReason;
 }

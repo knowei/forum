@@ -18,7 +18,7 @@
           >
             <template #default>
               <div v-if="!form.cover" class="cover-upload__placeholder">
-                <el-icon><Plus /></el-icon>
+                <el-icon aria-hidden="true"><Plus /></el-icon>
                 <span>上传封面</span>
               </div>
               <img v-else :src="form.cover" class="cover-upload__preview" />
@@ -44,7 +44,7 @@
 
       <template v-if="form.type === 0">
         <el-form-item label="下载链接" prop="downloadLink">
-          <el-input v-model="form.downloadLink" placeholder="https://..." />
+          <el-input v-model="form.downloadLink" placeholder="https://…" />
         </el-form-item>
         <el-form-item label="提取码">
           <el-input v-model="form.extractCode" />

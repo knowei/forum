@@ -5,10 +5,10 @@
 
       <el-form v-if="isLoginMode" :model="loginForm" @submit.prevent="handleLogin" class="auth-form">
         <el-form-item>
-          <el-input v-model="loginForm.username" placeholder="用户名" class="auth-input" />
+          <el-input v-model="loginForm.username" placeholder="用户名" class="auth-input" autocomplete="username" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="loginForm.password" type="password" show-password placeholder="密码" class="auth-input" />
+          <el-input v-model="loginForm.password" type="password" show-password placeholder="密码" class="auth-input" autocomplete="current-password" />
         </el-form-item>
         <el-form-item>
           <el-checkbox v-model="rememberMe">记住登录</el-checkbox>
@@ -18,24 +18,24 @@
 
       <el-form v-else :model="registerForm" @submit.prevent="handleRegister" class="auth-form">
         <el-form-item>
-          <el-input v-model="registerForm.username" placeholder="用户名" class="auth-input" />
+          <el-input v-model="registerForm.username" placeholder="用户名" class="auth-input" autocomplete="username" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="registerForm.nickname" placeholder="昵称" class="auth-input" />
+          <el-input v-model="registerForm.nickname" placeholder="昵称" class="auth-input" autocomplete="off" />
         </el-form-item>
         <el-form-item>
           <div class="auth-email-row">
-            <el-input v-model="registerForm.email" placeholder="邮箱" class="auth-input auth-email-input" />
+            <el-input v-model="registerForm.email" placeholder="邮箱" class="auth-input auth-email-input" autocomplete="email" />
             <el-button :disabled="sendCodeDisabled || !registerForm.email" :loading="sendingCode" class="auth-code-btn" @click="handleSendCode">
               {{ sendCodeText }}
             </el-button>
           </div>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="registerForm.code" placeholder="验证码" class="auth-input" />
+          <el-input v-model="registerForm.code" placeholder="验证码" class="auth-input" autocomplete="one-time-code" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="registerForm.password" type="password" show-password placeholder="密码" class="auth-input" />
+          <el-input v-model="registerForm.password" type="password" show-password placeholder="密码" class="auth-input" autocomplete="new-password" />
         </el-form-item>
         <el-button type="primary" :loading="registerLoading" class="auth-btn" @click="handleRegister">注册</el-button>
       </el-form>
@@ -191,6 +191,7 @@ async function handleRegister() {
 }
 
 .auth-dialog :deep(.el-dialog) {
+  overscroll-behavior: contain;
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);

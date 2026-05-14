@@ -4,10 +4,10 @@
       <h1 class="auth-title">登录</h1>
       <el-form :model="form" @submit.prevent="handleSubmit">
         <el-form-item>
-          <el-input v-model="form.username" placeholder="用户名" />
+          <el-input v-model="form.username" placeholder="用户名" autocomplete="username" />
         </el-form-item>
         <el-form-item>
-          <el-input v-model="form.password" type="password" show-password placeholder="密码" />
+          <el-input v-model="form.password" type="password" show-password placeholder="密码" autocomplete="current-password" />
         </el-form-item>
         <el-button type="primary" :loading="loading" style="width: 100%" @click="handleSubmit">登录</el-button>
         <div style="text-align:right;margin-top:8px">

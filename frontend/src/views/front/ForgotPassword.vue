@@ -7,7 +7,7 @@
         <p class="forgot-desc">输入注册时使用的邮箱地址，我们将发送验证码。</p>
         <el-form @submit.prevent="handleSendCode">
           <el-form-item>
-            <el-input v-model="email" placeholder="请输入邮箱" size="large" />
+            <el-input v-model="email" placeholder="请输入邮箱" size="large" autocomplete="email" />
           </el-form-item>
           <el-button type="primary" size="large" :loading="sending" style="width:100%" @click="handleSendCode">发送验证码</el-button>
         </el-form>
@@ -17,10 +17,10 @@
         <p class="forgot-desc">验证码已发送至 <strong>{{ email }}</strong>，请输入验证码和新密码。</p>
         <el-form @submit.prevent="handleReset">
           <el-form-item>
-            <el-input v-model="code" placeholder="请输入验证码" size="large" maxlength="6" />
+            <el-input v-model="code" placeholder="请输入验证码" size="large" maxlength="6" autocomplete="one-time-code" />
           </el-form-item>
           <el-form-item>
-            <el-input v-model="newPassword" type="password" placeholder="请输入新密码" size="large" show-password />
+            <el-input v-model="newPassword" type="password" placeholder="请输入新密码" size="large" show-password autocomplete="new-password" />
           </el-form-item>
           <el-button type="primary" size="large" :loading="resetting" style="width:100%" @click="handleReset">重置密码</el-button>
         </el-form>
