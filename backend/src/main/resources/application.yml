@@ -12,6 +12,9 @@ mybatis-plus:
   global-config:
     banner: false
 
+app:
+  cors-allowed-origins: "*"
+
 jwt:
   secret: change-this-secret-key-change-this-secret-key
   expiration: 604800000
