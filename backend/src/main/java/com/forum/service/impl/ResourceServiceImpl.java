@@ -1,6 +1,7 @@
 package com.forum.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.forum.common.PageResult;
 import com.forum.common.ResultCode;
 import com.forum.dto.PageQueryDTO;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ResourceServiceImpl implements ResourceService {
@@ -121,7 +123,7 @@ public class ResourceServiceImpl implements ResourceService {
         long page = pageQueryDTO.getPage() == null ? 1L : pageQueryDTO.getPage();
         long size = pageQueryDTO.getSize() == null ? 10L : pageQueryDTO.getSize();
         long offset = (page - 1) * size;
-        List<ResourceListItemVO> list = resourceMapper.selectPublishedList(pageQueryDTO.getCategoryId(), pageQueryDTO.getKeyword(), offset, size);
+        List<ResourceListItemVO> list = resourceMapper.selectPublishedList(pageQueryDTO.getCategoryId(), pageQueryDTO.getKeyword(), pageQueryDTO.getOrderBy(), offset, size);
         long total = resourceMapper.countPublished(pageQueryDTO.getCategoryId(), pageQueryDTO.getKeyword());
         return new PageResult<>(total, list);
     }
@@ -298,5 +300,35 @@ public class ResourceServiceImpl implements ResourceService {
                     .eq(Resource::getId, resourceId)
                     .setSql("collect_count = GREATEST(collect_count - 1, 0)"));
         }
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long id) {
+        LoginUser loginUser = getCurrentLoginUser();
+        Resource resource = resourceMapper.selectById(id);
+        if (resource == null) {
+            throw new BusinessException(ResultCode.NOT_FOUND, "资源不存在");
+        }
+        if (!resource.getUserId().equals(loginUser.getId()) && !(loginUser.getRole() != null && loginUser.getRole() == 1)) {
+            throw new BusinessException(ResultCode.FORBIDDEN, "无权删除此资源");
+        }
+        resourceMapper.deleteById(id);
+    }
+
+    @Override
+    public List<ResourceListItemVO> listMyCollections() {
+        LoginUser loginUser = getCurrentLoginUser();
+        List<Long> resourceIds = userCollectMapper.selectList(
+                new LambdaQueryWrapper<UserCollect>()
+                        .eq(UserCollect::getUserId, loginUser.getId())
+                        .orderByDesc(UserCollect::getCreateTime))
+                .stream()
+                .map(UserCollect::getResourceId)
+                .collect(Collectors.toList());
+        if (resourceIds.isEmpty()) {
+            return List.of();
+        }
+        return resourceMapper.selectListByIds(resourceIds);
     }
 }

@@ -105,16 +105,50 @@
           <el-button link type="primary" @click="openAuth(true)">登录</el-button>后可以发表评论
         </div>
 
-        <div v-if="comments.length" class="comment-list">
-          <div v-for="item in comments" :key="item.id" class="comment-item">
-            <el-avatar v-if="item.userAvatar" :src="item.userAvatar" :size="36" />
-            <el-avatar v-else :size="36">{{ item.userNickname?.[0] || '?' }}</el-avatar>
+        <div v-if="commentTree.length" class="comment-list">
+          <div v-for="top in commentTree" :key="top.id" class="comment-item">
+            <el-avatar v-if="top.userAvatar" :src="top.userAvatar" :size="36" />
+            <el-avatar v-else :size="36">{{ top.userNickname?.[0] || '?' }}</el-avatar>
             <div class="comment-item__body">
               <div class="comment-item__header">
-                <span class="comment-item__user">{{ item.userNickname }}</span>
-                <span class="comment-item__time">{{ formatDate(item.createTime) }}</span>
+                <span class="comment-item__user">{{ top.userNickname }}</span>
+                <span class="comment-item__time">{{ formatDate(top.createTime) }}</span>
               </div>
-              <div class="comment-item__content">{{ item.content }}</div>
+              <div class="comment-item__content">{{ top.content }}</div>
+              <div class="comment-item__actions">
+                <el-button v-if="userStore.isLogin" link type="primary" size="small" @click="startReply(top)">回复</el-button>
+              </div>
+
+              <!-- Replies -->
+              <div v-if="top.replies?.length" class="comment-replies">
+                <div v-for="reply in top.replies" :key="reply.id" class="comment-item comment-item--reply">
+                  <el-avatar v-if="reply.userAvatar" :src="reply.userAvatar" :size="28" />
+                  <el-avatar v-else :size="28">{{ reply.userNickname?.[0] || '?' }}</el-avatar>
+                  <div class="comment-item__body">
+                    <div class="comment-item__header">
+                      <span class="comment-item__user">{{ reply.userNickname }}</span>
+                      <span class="comment-item__time">{{ formatDate(reply.createTime) }}</span>
+                    </div>
+                    <div class="comment-item__content">{{ reply.content }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Reply form -->
+              <div v-if="replyTarget?.id === top.id" class="comment-reply-form">
+                <el-input
+                  v-model="replyContent"
+                  type="textarea"
+                  :rows="2"
+                  placeholder="@{{ top.userNickname }}"
+                  maxlength="1000"
+                  show-word-limit
+                />
+                <div class="comment-reply-form__actions">
+                  <el-button size="small" @click="cancelReply">取消</el-button>
+                  <el-button size="small" type="primary" :loading="replyLoading" @click="handleReply(top.id)">回复</el-button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -149,6 +183,9 @@ const resource = ref(null)
 const comments = ref([])
 const commentContent = ref('')
 const commentLoading = ref(false)
+const replyTarget = ref(null)
+const replyContent = ref('')
+const replyLoading = ref(false)
 const showAuth = ref(false)
 
 const md = new MarkdownIt({
@@ -165,6 +202,15 @@ const md = new MarkdownIt({
 
 const renderedContent = computed(() => DOMPurify.sanitize(md.render(resource.value?.content || '')))
 const tags = computed(() => (resource.value?.tags || '').split(',').map((item) => item.trim()).filter(Boolean))
+
+const commentTree = computed(() => {
+  const topLevel = comments.value.filter((c) => !c.parentId)
+  const replies = comments.value.filter((c) => c.parentId)
+  return topLevel.map((c) => ({
+    ...c,
+    replies: replies.filter((r) => r.parentId === c.id)
+  }))
+})
 
 function formatDate(value) {
   return value ? value.replace('T', ' ') : '-'
@@ -226,6 +272,31 @@ async function handleComment() {
     if (resource.value) resource.value.commentCount = (resource.value.commentCount || 0) + 1
   } finally {
     commentLoading.value = false
+  }
+}
+
+function startReply(comment) {
+  replyTarget.value = comment
+  replyContent.value = ''
+}
+
+function cancelReply() {
+  replyTarget.value = null
+  replyContent.value = ''
+}
+
+async function handleReply(parentId) {
+  if (!replyContent.value.trim()) return
+  replyLoading.value = true
+  try {
+    await createComment(resource.value.id, replyContent.value.trim(), parentId)
+    ElMessage.success('回复成功')
+    replyContent.value = ''
+    replyTarget.value = null
+    await fetchComments()
+    if (resource.value) resource.value.commentCount = (resource.value.commentCount || 0) + 1
+  } finally {
+    replyLoading.value = false
   }
 }
 
@@ -329,5 +400,34 @@ onMounted(loadAll)
   line-height: 1.6;
   color: #4b5563;
   word-break: break-word;
+}
+
+.comment-item__actions {
+  margin-top: 4px;
+}
+
+.comment-replies {
+  margin-top: 12px;
+  padding-left: 12px;
+  border-left: 2px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.comment-item--reply {
+  padding: 0;
+  border-bottom: none;
+}
+
+.comment-reply-form {
+  margin-top: 12px;
+}
+
+.comment-reply-form__actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
 }
 </style>

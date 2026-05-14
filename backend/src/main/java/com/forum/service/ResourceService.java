@@ -34,4 +34,8 @@ public interface ResourceService {
     void collect(Long resourceId);
 
     void uncollect(Long resourceId);
+
+    void deleteById(Long id);
+
+    List<ResourceListItemVO> listMyCollections();
 }

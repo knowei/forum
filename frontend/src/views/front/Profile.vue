@@ -26,60 +26,88 @@
     </section>
 
     <section class="page-card">
-      <h2>我的资源</h2>
-      <el-tabs v-model="activeTab" @tab-change="filterResources">
-        <el-tab-pane label="全部" name="all" />
-        <el-tab-pane label="草稿" name="3" />
-        <el-tab-pane label="待审核" name="0" />
-        <el-tab-pane label="已发布" name="1" />
-        <el-tab-pane label="已驳回" name="2" />
-      </el-tabs>
+      <el-tabs v-model="activeTab">
+        <el-tab-pane label="我的资源" name="resources">
+          <el-tabs v-model="resourceFilter" @tab-change="filterResources">
+            <el-tab-pane label="全部" name="all" />
+            <el-tab-pane label="草稿" name="3" />
+            <el-tab-pane label="待审核" name="0" />
+            <el-tab-pane label="已发布" name="1" />
+            <el-tab-pane label="已驳回" name="2" />
+          </el-tabs>
 
-      <el-table :data="filteredList" v-loading="loading" empty-text="暂无资源">
-        <el-table-column prop="title" label="标题" min-width="180" />
-        <el-table-column label="类型" width="60">
-          <template #default="{ row }">{{ row.type === 1 ? '文章' : '资源' }}</template>
-        </el-table-column>
-        <el-table-column label="状态" width="80">
-          <template #default="{ row }">
-            <el-tag :type="statusType(row.status)" size="small">{{ statusText(row.status) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="举报" width="70">
-          <template #default="{ row }">
-            <el-tag v-if="row.reportCount > 0" type="danger" size="small">被举报</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="150">
-          <template #default="{ row }">{{ formatDate(row.createTime) }}</template>
-        </el-table-column>
-        <el-table-column label="操作" width="140">
-          <template #default="{ row }">
-            <el-button type="primary" link @click="$router.push(`/resource/${row.id}`)">查看</el-button>
-            <el-button type="warning" link @click="$router.push(`/publish?id=${row.id}`)">编辑</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table :data="filteredList" v-loading="loading" empty-text="暂无资源">
+            <el-table-column prop="title" label="标题" min-width="180" />
+            <el-table-column label="类型" width="60">
+              <template #default="{ row }">{{ row.type === 1 ? '文章' : '资源' }}</template>
+            </el-table-column>
+            <el-table-column label="状态" width="80">
+              <template #default="{ row }">
+                <el-tag :type="statusType(row.status)" size="small">{{ statusText(row.status) }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column label="举报" width="70">
+              <template #default="{ row }">
+                <el-tag v-if="row.reportCount > 0" type="danger" size="small">被举报</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="createTime" label="创建时间" width="150">
+              <template #default="{ row }">{{ formatDate(row.createTime) }}</template>
+            </el-table-column>
+            <el-table-column label="操作" width="200">
+              <template #default="{ row }">
+                <el-button type="primary" link @click="$router.push(`/resource/${row.id}`)">查看</el-button>
+                <el-button type="warning" link @click="$router.push(`/publish?id=${row.id}`)">编辑</el-button>
+                <el-button type="danger" link @click="handleDelete(row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+
+        <el-tab-pane label="我的收藏" name="collections">
+          <el-table :data="collections" v-loading="colLoading" empty-text="暂无收藏">
+            <el-table-column prop="title" label="标题" min-width="200" />
+            <el-table-column label="类型" width="60">
+              <template #default="{ row }">{{ row.type === 1 ? '文章' : '资源' }}</template>
+            </el-table-column>
+            <el-table-column label="作者" width="120">
+              <template #default="{ row }">{{ row.authorNickname || '匿名' }}</template>
+            </el-table-column>
+            <el-table-column prop="createTime" label="发布时间" width="150">
+              <template #default="{ row }">{{ formatDate(row.createTime) }}</template>
+            </el-table-column>
+            <el-table-column label="操作" width="100">
+              <template #default="{ row }">
+                <el-button type="primary" link @click="$router.push(`/resource/${row.id}`)">查看</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
     </section>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { computed, onMounted, ref, watch } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
-import { getMyResources } from '@/api/resource'
+import { getMyResources, getMyCollections, deleteResource } from '@/api/resource'
 import { uploadImage } from '@/api/resource'
 import { updateUserAvatar } from '@/api/user'
 
 const userStore = useUserStore()
 const loading = ref(false)
 const list = ref([])
-const activeTab = ref('all')
+const activeTab = ref('resources')
+const resourceFilter = ref('all')
+
+const collections = ref([])
+const colLoading = ref(false)
 
 const filteredList = computed(() => {
-  if (activeTab.value === 'all') return list.value
-  return list.value.filter((item) => item.status === Number(activeTab.value))
+  if (resourceFilter.value === 'all') return list.value
+  return list.value.filter((item) => item.status === Number(resourceFilter.value))
 })
 
 function statusText(status) {
@@ -118,6 +146,21 @@ async function handleAvatarUpload(file) {
   return false
 }
 
+async function handleDelete(row) {
+  try {
+    await ElMessageBox.confirm(`确定要删除「${row.title}」吗？删除后不可恢复。`, '确认删除', {
+      confirmButtonText: '删除',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    await deleteResource(row.id)
+    ElMessage.success('删除成功')
+    await fetchMyResources()
+  } catch {
+    // cancelled
+  }
+}
+
 async function fetchMyResources() {
   loading.value = true
   try {
@@ -126,6 +169,21 @@ async function fetchMyResources() {
     loading.value = false
   }
 }
+
+async function fetchCollections() {
+  colLoading.value = true
+  try {
+    collections.value = await getMyCollections()
+  } finally {
+    colLoading.value = false
+  }
+}
+
+watch(activeTab, (tab) => {
+  if (tab === 'collections' && !collections.value.length) {
+    fetchCollections()
+  }
+})
 
 onMounted(fetchMyResources)
 </script>

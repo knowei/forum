@@ -28,11 +28,16 @@ public interface ResourceMapper extends BaseMapper<Resource> {
             <if test='keyword != null and keyword != ""'>
               and (r.title like concat('%', #{keyword}, '%') or ifnull(r.tags, '') like concat('%', #{keyword}, '%'))
             </if>
-            order by r.create_time desc
+            <choose>
+              <when test='orderBy == "views"'>order by r.view_count desc</when>
+              <when test='orderBy == "likes"'>order by r.like_count desc</when>
+              <otherwise>order by r.create_time desc</otherwise>
+            </choose>
             limit #{offset}, #{size}
             </script>
             """)
     List<ResourceListItemVO> selectPublishedList(@Param("categoryId") Integer categoryId, @Param("keyword") String keyword,
+                                                 @Param("orderBy") String orderBy,
                                                  @Param("offset") long offset, @Param("size") long size);
 
     @Select("""
@@ -106,4 +111,21 @@ public interface ResourceMapper extends BaseMapper<Resource> {
             </script>
             """)
     List<ResourceListItemVO> selectAdminList(@Param("status") Integer status);
+
+    @Select("""
+            <script>
+            select r.id, r.title, r.description, r.cover, r.tags, r.view_count as viewCount,
+                   r.like_count as likeCount, r.collect_count as collectCount, r.comment_count as commentCount,
+                   u.id as authorId, u.nickname as authorNickname, u.avatar as authorAvatar, r.create_time as createTime,
+                   r.status, r.update_time as updateTime, r.type
+            from resource r
+            join user u on u.id = r.user_id
+            where r.id in
+            <foreach item='id' collection='ids' open='(' separator=',' close=')'>
+              #{id}
+            </foreach>
+            order by r.create_time desc
+            </script>
+            """)
+    List<ResourceListItemVO> selectListByIds(@Param("ids") List<Long> ids);
 }

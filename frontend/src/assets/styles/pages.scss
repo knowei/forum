@@ -68,6 +68,12 @@
   font-size: 14px;
 }
 
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .resource-card__author {
   overflow: hidden;
   text-overflow: ellipsis;

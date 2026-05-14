@@ -28,6 +28,14 @@ export function auditResource(id, data) {
   return request.put(`/admin/resource/${id}/status`, data)
 }
 
+export function getMyCollections() {
+  return request.get('/resource/collections')
+}
+
+export function deleteResource(id) {
+  return request.delete(`/resource/${id}`)
+}
+
 export function uploadImage(file, scene = 'cover') {
   const formData = new FormData()
   formData.append('file', file)

@@ -30,7 +30,14 @@
 
     <div class="toolbar-row">
       <span class="toolbar-summary">共 {{ total }} 个资源</span>
-      <el-button text size="small" @click="resetFilters">重置</el-button>
+      <div class="toolbar-right">
+        <el-radio-group v-model="query.orderBy" size="small" @change="handleSortChange">
+          <el-radio-button value="">最新发布</el-radio-button>
+          <el-radio-button value="views">最多浏览</el-radio-button>
+          <el-radio-button value="likes">最多点赞</el-radio-button>
+        </el-radio-group>
+        <el-button text size="small" @click="resetFilters">重置</el-button>
+      </div>
     </div>
 
     <div class="resource-grid" v-loading="loading">
@@ -89,8 +96,14 @@ const query = reactive({
   page: 1,
   size: 12,
   categoryId: undefined,
-  keyword: ''
+  keyword: '',
+  orderBy: ''
 })
+
+function handleSortChange() {
+  query.page = 1
+  fetchResources()
+}
 
 function parseTags(value) {
   return (value || '').split(',').map((item) => item.trim()).filter(Boolean)

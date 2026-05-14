@@ -52,6 +52,7 @@
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Search } from '@element-plus/icons-vue'
+import { ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import AuthDialog from '@/components/common/AuthDialog.vue'
 
@@ -97,9 +98,18 @@ function handleSearch() {
   router.push({ name: 'search', query: { keyword } })
 }
 
-function handleLogout() {
-  userStore.logout()
-  router.push('/')
+async function handleLogout() {
+  try {
+    await ElMessageBox.confirm('确定要退出登录吗？', '退出登录', {
+      confirmButtonText: '退出',
+      cancelButtonText: '取消',
+      type: 'info'
+    })
+    userStore.logout()
+    router.push('/')
+  } catch {
+    // cancelled
+  }
 }
 
 function onAuthSuccess() {

@@ -16,4 +16,5 @@ public class PageQueryDTO {
 
     private Integer categoryId;
     private String keyword;
+    private String orderBy;
 }

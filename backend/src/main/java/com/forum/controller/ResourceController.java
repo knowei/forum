@@ -49,6 +49,17 @@ public class ResourceController {
         return Result.success(resourceService.listMyResources());
     }
 
+    @GetMapping("/collections")
+    public Result<List<ResourceListItemVO>> myCollections() {
+        return Result.success(resourceService.listMyCollections());
+    }
+
+    @DeleteMapping("/{id}")
+    public Result<Void> delete(@PathVariable Long id) {
+        resourceService.deleteById(id);
+        return Result.success();
+    }
+
     @GetMapping("/{id}")
     public Result<ResourceDetailVO> detail(@PathVariable Long id) {
         return Result.success(resourceService.getDetail(id));
