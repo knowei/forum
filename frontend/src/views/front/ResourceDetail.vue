@@ -160,6 +160,13 @@
     <el-empty v-else-if="!loading" description="资源不存在或当前无权限查看" />
   </div>
 
+  <!-- Back to Top -->
+  <Transition name="fade">
+    <button v-if="showBackTop" class="back-top-btn" @click="scrollToTop">
+      <el-icon :size="20"><ArrowUp /></el-icon>
+    </button>
+  </Transition>
+
   <AuthDialog v-if="showAuth" v-model:visible="showAuth" :login-mode="true" @success="showAuth = false" />
 </template>
 
@@ -167,8 +174,9 @@
 import DOMPurify from 'dompurify'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
+import { ArrowUp } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { getResourceDetail } from '@/api/resource'
 import { getCommentList, createComment } from '@/api/comment'
@@ -187,6 +195,12 @@ const replyTarget = ref(null)
 const replyContent = ref('')
 const replyLoading = ref(false)
 const showAuth = ref(false)
+const showBackTop = ref(false)
+let scrollHandler = null
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 const md = new MarkdownIt({
   html: false,
@@ -322,7 +336,20 @@ async function loadAll() {
 }
 
 watch(() => route.params.id, loadAll)
-onMounted(loadAll)
+
+onMounted(() => {
+  loadAll()
+  scrollHandler = () => {
+    showBackTop.value = window.scrollY > 400
+  }
+  window.addEventListener('scroll', scrollHandler, { passive: true })
+})
+
+onUnmounted(() => {
+  if (scrollHandler) {
+    window.removeEventListener('scroll', scrollHandler)
+  }
+})
 </script>
 
 <style scoped>

@@ -41,7 +41,11 @@
       </div>
     </header>
     <main class="container content-area">
-      <router-view />
+      <router-view v-slot="{ Component, route }">
+        <Transition name="fade-slide" mode="out-in">
+          <component :is="Component" :key="route.path" />
+        </Transition>
+      </router-view>
     </main>
 
     <AuthDialog v-if="showAuth" v-model:visible="showAuth" :login-mode="authLoginMode" @success="onAuthSuccess" />
