@@ -23,4 +23,4 @@ mail:
   host: smtp.qq.com
   port: 587
   username: 2994172661@qq.com
-  password: nvbrttnydlzldfhd
+  password: ${MAIL_PASSWORD}
