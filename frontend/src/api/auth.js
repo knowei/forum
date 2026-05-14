@@ -11,3 +11,11 @@ export function register(data) {
 export function sendVerifyCode(email) {
   return request.post('/auth/send-code', { email })
 }
+
+export function forgotPassword(email) {
+  return request.post('/auth/forgot-password', { email })
+}
+
+export function resetPassword(email, code, newPassword) {
+  return request.post('/auth/reset-password', { email, code, newPassword })
+}

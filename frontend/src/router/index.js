@@ -18,6 +18,7 @@ const router = createRouter({
       ]
     },
     { path: '/login', name: 'login', component: () => import('@/views/front/Login.vue') },
+{ path: '/forgot-password', name: 'forgot-password', component: () => import('@/views/front/ForgotPassword.vue') },
     { path: '/register', name: 'register', component: () => import('@/views/front/Register.vue') },
     {
       path: '/admin',
@@ -26,7 +27,8 @@ const router = createRouter({
       children: [
         { path: '', name: 'admin-dashboard', component: () => import('@/views/admin/Dashboard.vue') },
         { path: 'resources', name: 'admin-resources', component: () => import('@/views/admin/ResourceManage.vue') },
-        { path: 'reports', name: 'admin-reports', component: () => import('@/views/admin/ReportManage.vue') }
+        { path: 'reports', name: 'admin-reports', component: () => import('@/views/admin/ReportManage.vue') },
+        { path: 'users', name: 'admin-users', component: () => import('@/views/admin/UserManage.vue') }
       ]
     }
   ],

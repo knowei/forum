@@ -18,6 +18,10 @@
           <el-icon><Warning /></el-icon>
           <span>资源举报</span>
         </RouterLink>
+        <RouterLink to="/admin/users" class="admin-nav-item" :class="{ active: $route.path === '/admin/users' }">
+          <el-icon><User /></el-icon>
+          <span>用户管理</span>
+        </RouterLink>
       </nav>
       <div class="admin-sidebar__footer">
         <RouterLink to="/" class="admin-nav-item">
@@ -51,7 +55,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { DataAnalysis, List, Switch, Warning } from '@element-plus/icons-vue'
+import { DataAnalysis, List, Switch, User, Warning } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
@@ -62,6 +66,7 @@ const breadcrumbTitle = computed(() => {
   if (route.path === '/admin') return '数据概览'
   if (route.path === '/admin/resources') return '资源审核'
   if (route.path === '/admin/reports') return '资源举报'
+  if (route.path === '/admin/users') return '用户管理'
   return ''
 })
 

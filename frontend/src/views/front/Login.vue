@@ -10,6 +10,9 @@
           <el-input v-model="form.password" type="password" show-password placeholder="密码" />
         </el-form-item>
         <el-button type="primary" :loading="loading" style="width: 100%" @click="handleSubmit">登录</el-button>
+        <div style="text-align:right;margin-top:8px">
+          <router-link to="/forgot-password" style="font-size:13px;color:#9ca3af">忘记密码？</router-link>
+        </div>
       </el-form>
       <div class="auth-footer">
         还没有账号？<router-link to="/register">去注册</router-link>

@@ -101,4 +101,22 @@ public class AdminController {
         reportService.handle(id, status, handleNote);
         return Result.success();
     }
+
+    @GetMapping("/user/list")
+    public Result<List<User>> userList() {
+        return Result.success(userMapper.selectList(
+                new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<User>()
+                        .orderByDesc(User::getCreateTime)));
+    }
+
+    @PutMapping("/user/{id}/status")
+    public Result<Void> updateUserStatus(@PathVariable Long id, @RequestBody Map<String, Integer> body) {
+        User user = userMapper.selectById(id);
+        if (user == null) {
+            return Result.failure(com.forum.common.ResultCode.NOT_FOUND, "用户不存在");
+        }
+        user.setStatus(body.get("status"));
+        userMapper.updateById(user);
+        return Result.success();
+    }
 }

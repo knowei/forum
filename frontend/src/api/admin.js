@@ -11,3 +11,11 @@ export function getAdminResourceList(status) {
 export function getOnlineUsers() {
   return request.get('/admin/online-users')
 }
+
+export function getUserList() {
+  return request.get('/admin/user/list')
+}
+
+export function updateUserStatus(id, status) {
+  return request.put(`/admin/user/${id}/status`, { status })
+}
