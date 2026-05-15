@@ -35,7 +35,7 @@
         <aside class="panel-card detail-side">
           <div class="detail-side__section">
             <div class="detail-side__label">作者</div>
-            <div class="author-info">
+            <div class="author-info" style="cursor:pointer" @click="goUserSpace(resource.authorId)">
               <el-avatar
                 v-if="resource.authorAvatar"
                 :src="resource.authorAvatar"
@@ -194,7 +194,7 @@ import hljs from 'highlight.js'
 import { ArrowUp, Goods, GoodsFilled, Star, StarFilled } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { getResourceDetail, likeResource, unlikeResource, collectResource, uncollectResource } from '@/api/resource'
 import { getCommentList, createComment } from '@/api/comment'
 import { reportResource } from '@/api/report'
@@ -202,6 +202,7 @@ import { useUserStore } from '@/stores/user'
 import AuthDialog from '@/components/common/AuthDialog.vue'
 
 const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
 const loading = ref(false)
 const resource = ref(null)
@@ -293,6 +294,10 @@ async function handleCollect() {
       resource.value.collectCount = (resource.value.collectCount || 0) + 1
     }
   } catch { /* handled by interceptor */ }
+}
+
+function goUserSpace(id) {
+  router.push(`/user/${id}`)
 }
 
 async function copyText(value, message) {

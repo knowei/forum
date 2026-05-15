@@ -37,5 +37,7 @@ public interface ResourceService {
 
     void deleteById(Long id);
 
+    PageResult<ResourceListItemVO> listByUser(Long userId, PageQueryDTO pageQueryDTO);
+
     List<ResourceListItemVO> listMyCollections();
 }

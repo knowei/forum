@@ -328,6 +328,16 @@ public class ResourceServiceImpl implements ResourceService {
     }
 
     @Override
+    public PageResult<ResourceListItemVO> listByUser(Long userId, PageQueryDTO pageQueryDTO) {
+        long page = pageQueryDTO.getPage() == null ? 1L : pageQueryDTO.getPage();
+        long size = pageQueryDTO.getSize() == null ? 10L : pageQueryDTO.getSize();
+        long offset = (page - 1) * size;
+        List<ResourceListItemVO> list = resourceMapper.selectUserPublishedList(userId, offset, size);
+        long total = resourceMapper.countUserPublished(userId);
+        return new PageResult<>(total, list);
+    }
+
+    @Override
     public List<ResourceListItemVO> listMyCollections() {
         LoginUser loginUser = getCurrentLoginUser();
         List<Long> resourceIds = userCollectMapper.selectList(

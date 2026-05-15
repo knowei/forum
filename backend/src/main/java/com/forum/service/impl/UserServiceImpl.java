@@ -6,6 +6,7 @@ import com.forum.exception.BusinessException;
 import com.forum.mapper.UserMapper;
 import com.forum.security.LoginUser;
 import com.forum.service.UserService;
+import com.forum.vo.UserProfileVO;
 import com.forum.vo.UserVO;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -87,5 +88,15 @@ public class UserServiceImpl implements UserService {
         update.setId(loginUser.getId());
         update.setPassword(passwordEncoder.encode(newPassword));
         userMapper.updateById(update);
+    }
+
+    @Override
+    public UserProfileVO getProfile(Long id) {
+        User user = userMapper.selectById(id);
+        if (user == null) {
+            throw new BusinessException(ResultCode.NOT_FOUND, "用户不存在");
+        }
+        UserProfileVO profile = userMapper.selectProfileById(id);
+        return profile;
     }
 }

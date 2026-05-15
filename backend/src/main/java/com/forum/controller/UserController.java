@@ -7,6 +7,7 @@ import com.forum.entity.Notification;
 import com.forum.security.LoginUser;
 import com.forum.service.NotificationService;
 import com.forum.service.UserService;
+import com.forum.vo.UserProfileVO;
 import com.forum.vo.UserVO;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
@@ -54,6 +55,11 @@ public class UserController {
     public Result<Void> updatePassword(@Valid @RequestBody PasswordUpdateDTO dto) {
         userService.updatePassword(dto.getOldPassword(), dto.getNewPassword());
         return Result.success();
+    }
+
+    @GetMapping("/{id}/profile")
+    public Result<UserProfileVO> getProfile(@PathVariable Long id) {
+        return Result.success(userService.getProfile(id));
     }
 
     @GetMapping("/notifications")

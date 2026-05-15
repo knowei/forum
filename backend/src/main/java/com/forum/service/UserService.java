@@ -11,4 +11,6 @@ public interface UserService {
     void updateInfo(String nickname, String email);
 
     void updatePassword(String oldPassword, String newPassword);
+
+    com.forum.vo.UserProfileVO getProfile(Long id);
 }

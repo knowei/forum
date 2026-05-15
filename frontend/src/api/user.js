@@ -31,3 +31,7 @@ export function markNotificationRead(id) {
 export function markAllNotificationsRead() {
   return request.put('/user/notifications/read-all')
 }
+
+export function getUserProfile(id) {
+  return request.get(`/user/${id}/profile`)
+}

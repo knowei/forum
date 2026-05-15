@@ -128,4 +128,22 @@ public interface ResourceMapper extends BaseMapper<Resource> {
             </script>
             """)
     List<ResourceListItemVO> selectListByIds(@Param("ids") List<Long> ids);
+
+    @Select("""
+            select r.id, r.title, r.description, r.cover, r.tags, r.view_count as viewCount,
+                   r.like_count as likeCount, r.collect_count as collectCount, r.comment_count as commentCount,
+                   u.id as authorId, u.nickname as authorNickname, u.avatar as authorAvatar, r.create_time as createTime,
+                   r.status, r.update_time as updateTime, r.type
+            from resource r
+            join user u on u.id = r.user_id
+            where r.user_id = #{userId} and r.status = 1
+            order by r.create_time desc
+            limit #{offset}, #{size}
+            """)
+    List<ResourceListItemVO> selectUserPublishedList(@Param("userId") Long userId,
+                                                     @Param("offset") long offset,
+                                                     @Param("size") long size);
+
+    @Select("select count(*) from resource where user_id = #{userId} and status = 1")
+    long countUserPublished(@Param("userId") Long userId);
 }

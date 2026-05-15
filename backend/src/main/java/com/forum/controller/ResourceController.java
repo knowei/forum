@@ -40,7 +40,11 @@ public class ResourceController {
     }
 
     @GetMapping("/list")
-    public Result<PageResult<ResourceListItemVO>> list(PageQueryDTO pageQueryDTO) {
+    public Result<PageResult<ResourceListItemVO>> list(PageQueryDTO pageQueryDTO,
+                                                       @RequestParam(required = false) Long userId) {
+        if (userId != null) {
+            return Result.success(resourceService.listByUser(userId, pageQueryDTO));
+        }
         return Result.success(resourceService.listPublished(pageQueryDTO));
     }
 

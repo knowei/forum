@@ -43,17 +43,19 @@
         <article v-for="note in notes" :key="note.id" class="note-card">
           <!-- Card Header -->
           <div class="note-card__header">
-            <el-avatar
-              v-if="note.authorAvatar"
-              :src="note.authorAvatar"
-              :size="40"
-              class="note-card__avatar"
-              loading="lazy"
-            />
-            <el-avatar v-else :size="40" class="note-card__avatar">{{ note.authorNickname?.[0] || '?' }}</el-avatar>
-            <div class="note-card__meta">
-              <span class="note-card__author">{{ note.authorNickname }}</span>
-              <span class="note-card__time">{{ formatDate(note.createTime) }}</span>
+            <div class="note-card__header-user" @click="goUserSpace(note.userId)">
+              <el-avatar
+                v-if="note.authorAvatar"
+                :src="note.authorAvatar"
+                :size="40"
+                class="note-card__avatar"
+                loading="lazy"
+              />
+              <el-avatar v-else :size="40" class="note-card__avatar">{{ note.authorNickname?.[0] || '?' }}</el-avatar>
+              <div class="note-card__meta">
+                <span class="note-card__author">{{ note.authorNickname }}</span>
+                <span class="note-card__time">{{ formatDate(note.createTime) }}</span>
+              </div>
             </div>
             <el-button
               v-if="userStore.isAdmin"
@@ -192,6 +194,7 @@
 <script setup>
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import {
   getNoteList, createNote, deleteNote,
   likeNote, unlikeNote,
@@ -200,6 +203,7 @@ import {
 import { useUserStore } from '@/stores/user'
 import AuthDialog from '@/components/common/AuthDialog.vue'
 
+const router = useRouter()
 const userStore = useUserStore()
 const loading = ref(false)
 const creating = ref(false)
@@ -340,6 +344,10 @@ async function handleDeleteComment(id) {
   } catch { /* handled */ }
 }
 
+function goUserSpace(id) {
+  router.push(`/user/${id}`)
+}
+
 function formatDate(value) {
   if (!value) return ''
   const d = new Date(value)
@@ -466,6 +474,16 @@ fetchNotes()
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
+}
+.note-card__header-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  cursor: pointer;
+}
+.note-card__header-user:hover .note-card__author {
+  color: #409eff;
 }
 .note-card__avatar {
   border: 2px solid #f3e5f5;

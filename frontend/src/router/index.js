@@ -12,6 +12,7 @@ const router = createRouter({
       children: [
         { path: '', name: 'home', component: () => import('@/views/front/Home.vue') },
         { path: 'notes', name: 'notes', component: () => import('@/views/front/Notes.vue') },
+        { path: 'user/:id', name: 'user-space', component: () => import('@/views/front/UserSpace.vue') },
         { path: 'resource/:id', name: 'resource-detail', component: () => import('@/views/front/ResourceDetail.vue') },
         { path: 'publish', name: 'publish', meta: { requiresAuth: true }, component: () => import('@/views/front/Publish.vue') },
         { path: 'search', name: 'search', component: () => import('@/views/front/Search.vue') },

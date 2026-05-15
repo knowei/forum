@@ -59,7 +59,7 @@
             <el-tag v-for="tag in parseTags(item.tags).slice(0, 2)" :key="tag" size="small" effect="plain" round>{{ tag }}</el-tag>
           </div>
           <div class="resource-card__meta">
-            <span class="resource-card__author">{{ item.authorNickname || '匿名' }}</span>
+            <span class="resource-card__author" @click.stop="$router.push(`/user/${item.authorId}`)">{{ item.authorNickname || '匿名' }}</span>
             <span class="resource-card__views">{{ item.viewCount || 0 }} 次浏览</span>
           </div>
         </div>
