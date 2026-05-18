@@ -78,11 +78,12 @@ docker compose build backend
 # 或同时构建前后端
 docker compose build
 
-# 重启服务
-docker compose up -d
+# 强制重建容器（确保使用最新镜像）
+docker compose up -d --force-recreate
 ```
 
 > 前端代码改动只需重建 frontend 服务，后端代码改动重建 backend。
+> 如果构建后发现镜像已更新但容器还是旧版本（如容器运行时间未变），加上 `--force-recreate` 强制重建容器。
 
 ---
 
@@ -150,3 +151,53 @@ docker exec forum-frontend certbot --nginx -d your-domain.com
 ```
 
 > 更推荐在服务器上单独用 Nginx 反代，不推荐在容器内管理证书。
+
+---
+
+## 常见问题
+
+### 构建卡在 `mvn dependency:go-offline`
+
+Maven 下载依赖时网络超时，Dockerfile 已内置超时参数。如果仍卡住，尝试：
+
+```bash
+docker compose build --no-cache backend
+```
+
+### 后端容器不断重启 (`Restarting`)
+
+通常是配置文件问题。查看日志定位原因：
+
+```bash
+docker compose logs backend
+```
+
+常见原因：
+- **`MAIL_PASSWORD` 未设置**: 检查 `.env` 文件是否存在，内容为 `MAIL_PASSWORD=你的QQ邮箱授权码`
+- **数据库连接失败**: 确认 MySQL 容器已就绪，`application-docker.yml` 中数据库账号密码与 `docker-compose.yml` 一致
+
+### 构建后镜像更新了但容器还是旧的
+
+Docker Compose 默认不会重建已存在的容器。用 `--force-recreate` 强制重建：
+
+```bash
+docker compose up -d --force-recreate
+```
+
+### GitHub 推送失败
+
+国内网络可能无法访问 GitHub，项目已配置双远程：
+
+```bash
+# 查看远程仓库
+git remote -v
+# 输出:
+# origin  https://gitee.com/knowei/forum.git (fetch)
+# origin  https://gitee.com/knowei/forum.git (push)
+# origin  https://github.com/knowei/forum.git (push)
+
+# 仅推送到 Gitee
+git push origin
+
+# 如果 GitHub 连不上不影响，Gitee 同步后即可部署
+```
