@@ -38,6 +38,7 @@ services:
       - mysql
     environment:
       TZ: Asia/Shanghai
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
 
   frontend:
     build:
