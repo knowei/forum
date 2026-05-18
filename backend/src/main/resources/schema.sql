@@ -140,3 +140,27 @@ CREATE TABLE IF NOT EXISTS `notification` (
   INDEX idx_user_read (`user_id`, `read`),
   INDEX idx_create_time (`create_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `conversation` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+  `user1_id` BIGINT NOT NULL,
+  `user2_id` BIGINT NOT NULL,
+  `last_content` VARCHAR(500) DEFAULT NULL,
+  `last_time` DATETIME DEFAULT NULL,
+  `user1_unread` INT NOT NULL DEFAULT 0,
+  `user2_unread` INT NOT NULL DEFAULT 0,
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_users (`user1_id`, `user2_id`),
+  INDEX idx_user1_id (`user1_id`),
+  INDEX idx_user2_id (`user2_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `message` (
+  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
+  `conversation_id` BIGINT NOT NULL,
+  `sender_id` BIGINT NOT NULL,
+  `content` TEXT NOT NULL,
+  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_conversation_id (`conversation_id`),
+  INDEX idx_create_time (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

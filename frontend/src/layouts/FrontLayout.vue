@@ -10,6 +10,10 @@
           <RouterLink v-else to="/publish">发布资源</RouterLink>
           <button v-if="!userStore.isLogin" class="nav-btn" @click="openAuth(true)">个人中心</button>
           <RouterLink v-else to="/profile">个人中心</RouterLink>
+          <RouterLink v-if="userStore.isLogin" to="/messages">
+            私信
+            <span v-if="msgUnreadCount" class="msg-badge">{{ msgUnreadCount > 99 ? '99+' : msgUnreadCount }}</span>
+          </RouterLink>
           <RouterLink v-if="userStore.isAdmin" to="/admin">后台管理</RouterLink>
         </nav>
         <div class="header-search">
@@ -165,6 +169,8 @@ const notifications = ref([])
 const unreadCount = ref(0)
 let notifInterval = null
 
+const msgUnreadCount = ref(0)
+
 async function fetchNotifications() {
   try {
     notifications.value = await getNotifications()
@@ -229,6 +235,9 @@ onMounted(() => {
     fetchUnreadCount()
     notifInterval = setInterval(fetchUnreadCount, 30000)
   }
+  window.addEventListener('msg-unread', (e) => {
+    msgUnreadCount.value = e.detail
+  })
 })
 
 onUnmounted(() => {
@@ -404,4 +413,20 @@ onUnmounted(() => {
   color: #9ca3af;
   margin-top: 4px;
 }
+
+.msg-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  background: #f56c6c;
+  border-radius: 8px;
+  margin-left: 2px;
+}
 </style>
+

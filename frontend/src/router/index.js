@@ -16,7 +16,8 @@ const router = createRouter({
         { path: 'resource/:id', name: 'resource-detail', component: () => import('@/views/front/ResourceDetail.vue') },
         { path: 'publish', name: 'publish', meta: { requiresAuth: true }, component: () => import('@/views/front/Publish.vue') },
         { path: 'search', name: 'search', component: () => import('@/views/front/Search.vue') },
-        { path: 'profile', name: 'profile', meta: { requiresAuth: true }, component: () => import('@/views/front/Profile.vue') }
+        { path: 'profile', name: 'profile', meta: { requiresAuth: true }, component: () => import('@/views/front/Profile.vue') },
+        { path: 'messages', name: 'messages', meta: { requiresAuth: true }, component: () => import('@/views/front/Messages.vue') }
       ]
     },
     { path: '/login', name: 'login', component: () => import('@/views/front/Login.vue') },

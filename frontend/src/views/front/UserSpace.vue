@@ -25,6 +25,7 @@
             <span class="user-stat__label">加入</span>
           </div>
         </div>
+        <el-button v-if="canSendMessage" size="small" class="msg-btn" @click="sendMessage">发私信</el-button>
       </div>
     </section>
 
@@ -72,18 +73,29 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted, ref, computed, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { getUserProfile } from '@/api/user'
 import { getResourceList } from '@/api/resource'
+import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
+const router = useRouter()
+const userStore = useUserStore()
 const loading = ref(false)
 const profile = ref(null)
 const resources = ref([])
 const page = ref(1)
 const pageSize = ref(12)
 const total = ref(0)
+
+const canSendMessage = computed(() => {
+  return userStore.isLogin && profile.value && profile.value.id !== userStore.userInfo?.id
+})
+
+function sendMessage() {
+  router.push({ path: '/messages', query: { user: profile.value.id } })
+}
 
 async function loadAll() {
   const userId = route.params.id
@@ -179,6 +191,10 @@ onMounted(loadAll)
   display: flex;
   justify-content: center;
   gap: 32px;
+}
+
+.msg-btn {
+  margin-top: 12px;
 }
 .user-stat {
   display: flex;
