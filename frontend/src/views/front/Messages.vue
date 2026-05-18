@@ -69,17 +69,26 @@
           </div>
 
           <div class="chat-panel__input">
-            <el-input
-              v-model="inputContent"
-              type="textarea"
-              :rows="2"
-              placeholder="输入消息…"
-              :disabled="sending"
-              @keydown.enter.exact.prevent="handleSend"
-            />
-            <el-button type="primary" :loading="sending" @click="handleSend" class="send-btn">
-              发送
-            </el-button>
+            <div class="input-bar">
+              <input
+                v-model="inputContent"
+                class="input-bar__field"
+                placeholder="输入消息…"
+                :disabled="sending"
+                @keydown.enter.exact.prevent="handleSend"
+              />
+              <button
+                class="input-bar__send"
+                :class="{ 'input-bar__send--active': inputContent.trim() }"
+                :disabled="sending || !inputContent.trim()"
+                @click="handleSend"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+              </button>
+            </div>
           </div>
         </template>
 
@@ -332,7 +341,11 @@ async function loadNewMessages() {
 }
 
 .conv-item--active {
-  background: var(--bg-hover, #f0f7ff);
+  background: #eef4ff;
+}
+
+.conv-item--active:hover {
+  background: #e6eefe;
 }
 
 .conv-item__body {
@@ -437,28 +450,90 @@ async function loadNewMessages() {
 }
 
 .chat-panel__input {
-  padding: 12px 20px;
+  padding: 12px 16px;
   border-top: 1px solid var(--border-light, #f0f0f0);
+  background: var(--bg-card, #fff);
+}
+
+.input-bar {
   display: flex;
-  gap: 10px;
-  align-items: flex-end;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-hover, #f3f4f6);
+  border: 1px solid var(--border-light, #e5e7eb);
+  border-radius: 10px;
+  padding: 4px 4px 4px 14px;
+  transition: border-color 0.2s, background 0.2s;
 }
 
-.chat-panel__input .el-textarea {
+.input-bar:focus-within {
+  border-color: #409eff;
+  background: var(--bg-card, #fff);
+}
+
+.input-bar__field {
   flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text-primary, #1f2937);
+  line-height: 1.5;
+  padding: 6px 0;
+  min-width: 0;
 }
 
-.send-btn {
-  flex-shrink: 0;
+.input-bar__field::placeholder {
+  color: var(--text-muted, #9ca3af);
+}
+
+.input-bar__field:disabled {
+  opacity: 0.5;
+}
+
+.input-bar__send {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
   height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: #d0d5dd;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.input-bar__send:hover:not(:disabled) {
+  background: #b0b5bd;
+}
+
+.input-bar__send--active {
+  background: #409eff;
+}
+
+.input-bar__send--active:hover:not(:disabled) {
+  background: #3a8ce6;
+}
+
+.input-bar__send:disabled {
+  cursor: not-allowed;
 }
 
 /* ---- Message Bubbles ---- */
 .msg-item {
   display: flex;
   gap: 8px;
-  align-items: flex-start;
-  max-width: 75%;
+  align-items: flex-end;
+  max-width: 72%;
+  animation: msg-in 0.2s ease-out;
+}
+
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .msg-item--mine {
@@ -469,7 +544,7 @@ async function loadNewMessages() {
 .msg-item__content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .msg-item--mine .msg-item__content {
@@ -477,13 +552,13 @@ async function loadNewMessages() {
 }
 
 .msg-bubble {
-  padding: 10px 14px;
-  border-radius: 12px;
+  padding: 10px 16px;
+  border-radius: 18px;
   font-size: 14px;
   line-height: 1.5;
   word-break: break-word;
-  background: var(--bg-hover, #f3f4f6);
-  color: var(--text-primary, #1f2937);
+  background: #f0f0f0;
+  color: #1f2937;
 }
 
 .msg-item--mine .msg-bubble {
@@ -499,6 +574,6 @@ async function loadNewMessages() {
 .msg-time {
   font-size: 11px;
   color: var(--text-muted, #9ca3af);
-  padding: 0 4px;
+  padding: 0 6px;
 }
 </style>
