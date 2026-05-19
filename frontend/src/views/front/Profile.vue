@@ -428,4 +428,13 @@ onMounted(fetchMyResources)
   color: var(--text-muted, #9ca3af);
   margin-left: 4px;
 }
+
+@media (max-width: 480px) {
+  .settings-form {
+    max-width: 100%;
+  }
+  .bg-preview {
+    height: 100px;
+  }
+}
 </style>

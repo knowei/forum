@@ -2,7 +2,7 @@
   <div class="messages-page">
     <div class="messages-container">
       <!-- Sidebar -->
-      <div class="conv-sidebar">
+      <div class="conv-sidebar" :class="{ 'conv-sidebar--hidden': mobileView === 'chat' }">
         <div class="conv-sidebar__header">
           <h2>私信</h2>
         </div>
@@ -33,9 +33,12 @@
       </div>
 
       <!-- Chat panel -->
-      <div class="chat-panel">
+      <div class="chat-panel" :class="{ 'chat-panel--hidden': mobileView === 'list' }">
         <template v-if="activeConv">
           <div class="chat-panel__header">
+            <button v-if="mobileView === 'chat'" class="chat-back-btn" aria-label="返回" @click="mobileView = 'list'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
             <el-avatar :size="32" :src="activeConv.otherAvatar">
               {{ activeConv.otherNickname?.[0] }}
             </el-avatar>
@@ -130,6 +133,11 @@ const currentUserId = ref(null)
 const hasMore = ref(true)
 const messageOffset = ref(0)
 const unreadCount = ref(0)
+const mobileView = ref('list')
+
+function isMobile() {
+  return window.innerWidth < 768
+}
 
 let pollTimer = null
 
@@ -198,6 +206,7 @@ async function selectConversation(conv) {
   messages.value = []
   messageOffset.value = 0
   hasMore.value = true
+  if (isMobile()) mobileView.value = 'chat'
 
   try {
     const list = await getMessages(conv.id, 0, 50)
@@ -575,5 +584,53 @@ async function loadNewMessages() {
   font-size: 11px;
   color: var(--text-muted, #9ca3af);
   padding: 0 6px;
+}
+
+/* ---- Back Button ---- */
+.chat-back-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.chat-back-btn:hover {
+  background: var(--bg-hover);
+  color: #409eff;
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+  .messages-page {
+    padding: 0;
+    height: calc(100vh - 80px);
+  }
+
+  .messages-container {
+    border-radius: 0;
+  }
+
+  .conv-sidebar {
+    width: 100%;
+  }
+
+  .conv-sidebar--hidden {
+    display: none;
+  }
+
+  .chat-panel--hidden {
+    display: none;
+  }
+
+  .chat-back-btn {
+    display: flex;
+  }
 }
 </style>

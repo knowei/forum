@@ -230,4 +230,39 @@ onMounted(loadAll)
   justify-content: center;
   margin-top: 24px;
 }
+
+@media (max-width: 768px) {
+  .user-page {
+    max-width: 100%;
+  }
+  .user-profile__inner {
+    padding: 0 16px 20px;
+  }
+  .user-profile__stats {
+    gap: 20px;
+  }
+  .resource-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .user-profile__bg {
+    height: 80px;
+  }
+  .user-profile__name {
+    font-size: 18px;
+  }
+  .user-profile__stats {
+    gap: 16px;
+  }
+  .user-stat__value {
+    font-size: 16px;
+  }
+  .resource-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
 </style>

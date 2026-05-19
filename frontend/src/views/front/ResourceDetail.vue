@@ -571,4 +571,30 @@ onUnmounted(() => {
     transition: none;
   }
 }
+
+@media (max-width: 768px) {
+  .action-float {
+    right: 16px;
+    bottom: 90px;
+  }
+  .action-float__btn {
+    width: 44px;
+    padding: 4px 0;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .action-float {
+    right: 12px;
+    bottom: 80px;
+    padding: 4px;
+    border-radius: 10px;
+  }
+  .action-float__btn {
+    width: 40px;
+    padding: 3px 0;
+    font-size: 10px;
+  }
+}
 </style>

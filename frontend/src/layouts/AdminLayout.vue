@@ -37,6 +37,9 @@
     <div class="admin-main">
       <header class="admin-header">
         <div class="admin-header__left">
+          <button class="admin-hamburger" aria-label="导航菜单" @click="drawerVisible = true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
           <el-breadcrumb separator=">">
             <el-breadcrumb-item to="/admin">管理后台</el-breadcrumb-item>
             <el-breadcrumb-item>{{ breadcrumbTitle }}</el-breadcrumb-item>
@@ -49,6 +52,37 @@
           <el-button text type="primary" @click="handleLogout">退出</el-button>
         </div>
       </header>
+
+      <!-- Mobile Drawer -->
+      <el-drawer v-model="drawerVisible" direction="ltr" size="260px" title="管理后台">
+        <nav class="admin-drawer__nav">
+          <RouterLink to="/admin" class="admin-nav-item" :class="{ active: $route.path === '/admin' }" @click="drawerVisible = false">
+            <el-icon aria-hidden="true"><DataAnalysis /></el-icon>
+            <span>数据概览</span>
+          </RouterLink>
+          <RouterLink to="/admin/resources" class="admin-nav-item" :class="{ active: $route.path === '/admin/resources' }" @click="drawerVisible = false">
+            <el-icon aria-hidden="true"><List /></el-icon>
+            <span>资源审核</span>
+          </RouterLink>
+          <RouterLink to="/admin/reports" class="admin-nav-item" :class="{ active: $route.path === '/admin/reports' }" @click="drawerVisible = false">
+            <el-icon aria-hidden="true"><Warning /></el-icon>
+            <span>资源举报</span>
+          </RouterLink>
+          <RouterLink to="/admin/users" class="admin-nav-item" :class="{ active: $route.path === '/admin/users' }" @click="drawerVisible = false">
+            <el-icon aria-hidden="true"><User /></el-icon>
+            <span>用户管理</span>
+          </RouterLink>
+          <RouterLink to="/admin/categories" class="admin-nav-item" :class="{ active: $route.path === '/admin/categories' }" @click="drawerVisible = false">
+            <el-icon aria-hidden="true"><CollectionTag /></el-icon>
+            <span>分类管理</span>
+          </RouterLink>
+          <div class="admin-drawer__divider" />
+          <RouterLink to="/" class="admin-nav-item" @click="drawerVisible = false">
+            <el-icon aria-hidden="true"><Switch /></el-icon>
+            <span>返回前台</span>
+          </RouterLink>
+        </nav>
+      </el-drawer>
       <section class="admin-content">
         <router-view />
       </section>
@@ -57,7 +91,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { CollectionTag, DataAnalysis, List, Switch, User, Warning } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
@@ -65,6 +99,8 @@ import { useUserStore } from '@/stores/user'
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+
+const drawerVisible = ref(false)
 
 const breadcrumbTitle = computed(() => {
   if (route.path === '/admin') return '数据概览'
@@ -166,5 +202,52 @@ function handleLogout() {
 .admin-header__user {
   font-size: 14px;
   color: #374151;
+}
+
+/* ---- Admin Hamburger ---- */
+.admin-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.admin-hamburger:hover {
+  background: #f3f4f6;
+  color: #409eff;
+}
+
+/* ---- Admin Drawer Nav ---- */
+.admin-drawer__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-drawer__divider {
+  height: 1px;
+  background: var(--border-light, #f0f0f0);
+  margin: 8px 0;
+}
+
+@media (max-width: 768px) {
+  .admin-hamburger {
+    display: flex;
+  }
+
+  .admin-sidebar {
+    display: none;
+  }
+
+  .admin-header__user {
+    display: none;
+  }
 }
 </style>

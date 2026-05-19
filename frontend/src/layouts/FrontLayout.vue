@@ -2,6 +2,9 @@
   <div class="front-layout">
     <header class="site-header" :class="{ 'header-hidden': headerHidden }">
       <div class="container header-inner">
+        <button class="hamburger" aria-label="导航菜单" @click="drawerVisible = true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <RouterLink class="logo" to="/">资源论坛</RouterLink>
         <nav class="nav-links">
           <RouterLink to="/">首页</RouterLink>
@@ -72,15 +75,59 @@
             <el-avatar v-if="userStore.userInfo?.avatar" :src="userStore.userInfo.avatar" :size="32" />
             <el-avatar v-else :size="32">{{ userStore.userInfo?.nickname?.[0] }}</el-avatar>
             <span class="nickname">{{ userStore.userInfo?.nickname }}</span>
-            <el-button link type="primary" @click="handleLogout">退出</el-button>
+            <el-button link type="primary" class="link-logout" @click="handleLogout">退出</el-button>
           </template>
           <template v-else>
-            <el-button link type="primary" @click="openAuth(true)">登录</el-button>
-            <el-button link type="primary" @click="openAuth(false)">注册</el-button>
+            <el-button link type="primary" class="link-login" @click="openAuth(true)">登录</el-button>
+            <el-button link type="primary" class="link-register" @click="openAuth(false)">注册</el-button>
           </template>
         </div>
       </div>
     </header>
+
+    <!-- Mobile Drawer -->
+    <el-drawer v-model="drawerVisible" direction="ltr" size="280px" title="导航" :with-header="true">
+      <div class="mobile-drawer__body">
+        <div class="mobile-drawer__search">
+          <el-input
+            v-model="searchKeyword"
+            placeholder="搜索…"
+            clearable
+            @keyup.enter="doDrawerSearch"
+          >
+            <template #prefix>
+              <el-icon aria-hidden="true"><Search /></el-icon>
+            </template>
+          </el-input>
+        </div>
+        <nav class="mobile-drawer__nav">
+          <RouterLink class="mobile-nav-item" to="/" @click="drawerVisible = false">首页</RouterLink>
+          <RouterLink class="mobile-nav-item" to="/notes" @click="drawerVisible = false">随手记</RouterLink>
+          <button v-if="!userStore.isLogin" class="mobile-nav-item mobile-nav-item--btn" @click="closeDrawerAndOpenAuth(true)">发布资源</button>
+          <RouterLink v-else class="mobile-nav-item" to="/publish" @click="drawerVisible = false">发布资源</RouterLink>
+          <button v-if="!userStore.isLogin" class="mobile-nav-item mobile-nav-item--btn" @click="closeDrawerAndOpenAuth(true)">个人中心</button>
+          <RouterLink v-else class="mobile-nav-item" to="/profile" @click="drawerVisible = false">个人中心</RouterLink>
+          <RouterLink v-if="userStore.isLogin" class="mobile-nav-item" to="/messages" @click="drawerVisible = false">私信</RouterLink>
+          <RouterLink v-if="userStore.isAdmin" class="mobile-nav-item" to="/admin" @click="drawerVisible = false">后台管理</RouterLink>
+        </nav>
+        <div class="mobile-drawer__footer">
+          <template v-if="userStore.isLogin">
+            <div class="mobile-drawer__user">
+              <el-avatar v-if="userStore.userInfo?.avatar" :src="userStore.userInfo.avatar" :size="36" />
+              <el-avatar v-else :size="36">{{ userStore.userInfo?.nickname?.[0] }}</el-avatar>
+              <span>{{ userStore.userInfo?.nickname }}</span>
+            </div>
+            <el-button class="mobile-drawer__logout" @click="handleLogoutMobile">退出登录</el-button>
+          </template>
+          <template v-else>
+            <div class="mobile-drawer__auth">
+              <el-button type="primary" @click="closeDrawerAndOpenAuth(true)">登录</el-button>
+              <el-button @click="closeDrawerAndOpenAuth(false)">注册</el-button>
+            </div>
+          </template>
+        </div>
+      </div>
+    </el-drawer>
     <main class="container content-area">
       <router-view v-slot="{ Component, route }">
         <Transition name="fade-slide" mode="out-in">
@@ -111,6 +158,7 @@ const searchKeyword = ref('')
 const showAuth = ref(false)
 const authLoginMode = ref(true)
 const headerHidden = ref(false)
+const drawerVisible = ref(false)
 let lastScrollY = 0
 
 function handleScroll() {
@@ -138,6 +186,21 @@ watch(() => route.query.showAuth, (val) => {
 function openAuth(loginMode) {
   authLoginMode.value = loginMode
   showAuth.value = true
+}
+
+function closeDrawerAndOpenAuth(loginMode) {
+  drawerVisible.value = false
+  openAuth(loginMode)
+}
+
+function doDrawerSearch() {
+  drawerVisible.value = false
+  handleSearch()
+}
+
+async function handleLogoutMobile() {
+  drawerVisible.value = false
+  await handleLogout()
 }
 
 function handleSearch() {
@@ -427,6 +490,133 @@ onUnmounted(() => {
   background: #f56c6c;
   border-radius: 8px;
   margin-left: 2px;
+}
+
+/* ---- Hamburger ---- */
+.hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.hamburger:hover {
+  background: var(--bg-hover);
+  color: #409eff;
+}
+
+/* ---- Mobile Drawer ---- */
+.mobile-drawer__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+}
+
+.mobile-drawer__search {
+  flex-shrink: 0;
+}
+
+.mobile-drawer__nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--text-primary);
+  transition: background 0.15s;
+}
+
+.mobile-nav-item:hover {
+  background: var(--bg-hover);
+  color: #409eff;
+}
+
+.mobile-nav-item--btn {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.mobile-drawer__footer {
+  flex-shrink: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+.mobile-drawer__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.mobile-drawer__logout {
+  width: 100%;
+}
+
+.mobile-drawer__auth {
+  display: flex;
+  gap: 12px;
+}
+
+.mobile-drawer__auth .el-button {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .header-search {
+    display: none;
+  }
+
+  .header-inner {
+    gap: 8px;
+  }
+
+  .header-actions .nickname {
+    display: none;
+  }
+
+  .header-actions .el-button.link-logout {
+    display: none;
+  }
+
+  .header-actions .el-button.link-login,
+  .header-actions .el-button.link-register {
+    font-size: 13px;
+    padding: 4px 6px;
+  }
+
+  .header-actions {
+    gap: 2px;
+  }
 }
 </style>
 
