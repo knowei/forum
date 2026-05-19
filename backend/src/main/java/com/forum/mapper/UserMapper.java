@@ -22,4 +22,16 @@ public interface UserMapper extends BaseMapper<User> {
             where u.id = #{id}
             """)
     com.forum.vo.UserProfileVO selectProfileById(Long id);
+
+    @Select("""
+            select u.id, u.username, u.nickname, u.avatar, u.role, u.create_time as createTime,
+                   (select count(*) from resource r where r.user_id = u.id and r.status = 1) as resourceCount,
+                   (select coalesce(sum(r.view_count), 0) from resource r where r.user_id = u.id and r.status = 1) as totalViews
+            from user u
+            where u.status = 1
+              and (u.username like concat('%', #{keyword}, '%') or u.nickname like concat('%', #{keyword}, '%'))
+            order by u.create_time desc
+            limit 20
+            """)
+    java.util.List<com.forum.vo.UserProfileVO> selectByKeyword(String keyword);
 }

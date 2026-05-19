@@ -8,6 +8,8 @@ import com.forum.security.LoginUser;
 import com.forum.service.UserService;
 import com.forum.vo.UserProfileVO;
 import com.forum.vo.UserVO;
+
+import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -109,5 +111,13 @@ public class UserServiceImpl implements UserService {
         }
         UserProfileVO profile = userMapper.selectProfileById(id);
         return profile;
+    }
+
+    @Override
+    public List<UserProfileVO> searchUsers(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return List.of();
+        }
+        return userMapper.selectByKeyword(keyword.trim());
     }
 }

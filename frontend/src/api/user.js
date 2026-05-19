@@ -39,3 +39,7 @@ export function getUserProfile(id) {
 export function updateBgImage(bgImage) {
   return request.put('/user/bg-image', { bgImage })
 }
+
+export function searchUsers(keyword) {
+  return request.get('/user/search', { params: { keyword } })
+}

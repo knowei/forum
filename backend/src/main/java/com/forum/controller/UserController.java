@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -61,6 +62,11 @@ public class UserController {
     public Result<Void> updateBgImage(@RequestBody Map<String, String> body) {
         userService.updateBgImage(body.get("bgImage"));
         return Result.success();
+    }
+
+    @GetMapping("/search")
+    public Result<List<UserProfileVO>> search(@RequestParam String keyword) {
+        return Result.success(userService.searchUsers(keyword));
     }
 
     @GetMapping("/{id}/profile")

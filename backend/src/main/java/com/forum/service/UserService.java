@@ -15,4 +15,6 @@ public interface UserService {
     void updateBgImage(String bgImageUrl);
 
     com.forum.vo.UserProfileVO getProfile(Long id);
+
+    java.util.List<com.forum.vo.UserProfileVO> searchUsers(String keyword);
 }
