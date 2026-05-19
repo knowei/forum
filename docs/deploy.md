@@ -64,7 +64,7 @@ docker compose up -d
 
 ## 日常更新
 
-拉取最新代码后重新构建并重启：
+拉取最新代码后，一行命令搞定构建 + 重启：
 
 ```bash
 cd /opt/app/forum
@@ -72,18 +72,25 @@ cd /opt/app/forum
 # 拉取最新代码
 git pull
 
-# 只重新构建后端（代码变动最频繁）
-docker compose build backend
+# 【推荐】构建并重启所有服务（自动检测代码变更）
+docker compose up -d --build
 
-# 或同时构建前后端
-docker compose build
+# 只重启后端（前端没改时更快）
+docker compose up -d --build backend
+```
 
-# 强制重建容器（确保使用最新镜像）
+> `docker compose up -d --build` 会自动重新构建有变更的服务镜像，然后重建容器，一步到位。
+> 如果遇到缓存问题（如 Maven 依赖下载失败），再用下面的无缓存构建。
+
+### 清理缓存并重建
+
+```bash
+# 完全不使用缓存构建，然后强制重建容器
+docker compose build --no-cache
 docker compose up -d --force-recreate
 ```
 
-> 前端代码改动只需重建 frontend 服务，后端代码改动重建 backend。
-> 如果构建后发现镜像已更新但容器还是旧版本（如容器运行时间未变），加上 `--force-recreate` 强制重建容器。
+> 注意：`docker compose build` 只构建镜像，不会重启容器。构建后必须执行 `docker compose up -d` 来应用新镜像。
 
 ---
 
@@ -178,9 +185,14 @@ docker compose logs backend
 
 ### 构建后镜像更新了但容器还是旧的
 
-Docker Compose 默认不会重建已存在的容器。用 `--force-recreate` 强制重建：
+`docker compose build` 只构建镜像，不会重启容器。需要用 `up` 来应用新镜像：
 
 ```bash
+# 方法一：构建 + 重启一步完成（推荐）
+docker compose up -d --build
+
+# 方法二：先构建，再强制重建容器
+docker compose build
 docker compose up -d --force-recreate
 ```
 

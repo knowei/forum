@@ -146,6 +146,8 @@ onMounted(fetchList)
 
 .category-manage__header h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 }
 </style>

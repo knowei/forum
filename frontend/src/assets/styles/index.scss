@@ -416,6 +416,98 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ========================================
+   iOS 26 Dialog
+   ======================================== */
+.el-dialog {
+  border-radius: 20px !important;
+  background: var(--bg-card) !important;
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.el-dialog__header {
+  padding: 24px 24px 0 !important;
+  margin: 0 !important;
+}
+
+.el-dialog__title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+}
+
+.el-dialog__headerbtn {
+  top: 20px !important;
+  right: 20px !important;
+  font-size: 18px !important;
+}
+
+.el-dialog__body {
+  padding: 20px 24px !important;
+  color: var(--text-secondary) !important;
+}
+
+.el-dialog__footer {
+  padding: 0 24px 24px !important;
+}
+
+.el-overlay {
+  background: rgba(0, 0, 0, 0.3) !important;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* ========================================
+   iOS 26 Table
+   ======================================== */
+.el-table {
+  border-radius: 14px !important;
+  overflow: hidden;
+}
+
+.el-table th.el-table__cell {
+  background: var(--bg-fill) !important;
+  color: var(--text-secondary) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+.el-table td.el-table__cell {
+  color: var(--text-primary) !important;
+}
+
+/* ========================================
+   iOS 26 Tabs
+   ======================================== */
+.el-tabs__item {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: var(--text-secondary) !important;
+}
+
+.el-tabs__item.is-active {
+  color: var(--tint) !important;
+  font-weight: 600 !important;
+}
+
+.el-tabs__active-bar {
+  background: var(--tint) !important;
+}
+
+/* ========================================
+   iOS 26 Admin page header
+   ======================================== */
+.panel-card h2,
+.page-card h2,
+.category-manage__header h2,
+.table-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* ========================================
    Responsive
    ======================================== */
 @media (max-width: 900px) {

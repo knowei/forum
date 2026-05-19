@@ -89,7 +89,7 @@ onMounted(async () => {
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
 }
 
 .stat-card--clickable {
@@ -107,23 +107,23 @@ onMounted(async () => {
 }
 
 .stat-card__icon--blue {
-  background: #eff6ff;
-  color: #3b82f6;
+  background: var(--tint-light);
+  color: var(--tint);
 }
 
 .stat-card__icon--green {
-  background: #f0fdf4;
-  color: #22c55e;
+  background: rgba(52, 199, 89, 0.1);
+  color: var(--green);
 }
 
 .stat-card__icon--orange {
-  background: #fff7ed;
-  color: #f97316;
+  background: rgba(255, 149, 0, 0.1);
+  color: var(--orange);
 }
 
 .stat-card__icon--purple {
-  background: #f5f3ff;
-  color: #8b5cf6;
+  background: rgba(175, 82, 222, 0.1);
+  color: var(--purple);
 }
 
 .stat-card__body {
@@ -134,13 +134,13 @@ onMounted(async () => {
 .stat-card__value {
   font-size: 28px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text-primary);
   line-height: 1.2;
 }
 
 .stat-card__label {
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
@@ -166,7 +166,7 @@ onMounted(async () => {
   flex: 1;
   font-weight: 600;
   font-size: 14px;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 .online-user-tag {

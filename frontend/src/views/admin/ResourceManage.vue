@@ -144,16 +144,19 @@ onMounted(fetchList)
 .preview-cover {
   max-width: 100%;
   max-height: 300px;
-  border-radius: 8px;
+  border-radius: 12px;
   margin-bottom: 16px;
 }
 .preview-title {
   font-size: 24px;
+  font-weight: 700;
   margin: 0 0 12px;
+  letter-spacing: -0.3px;
 }
 .preview-desc {
-  color: #6b7280;
+  color: var(--text-secondary);
   margin: 0 0 12px;
+  line-height: 1.6;
 }
 .preview-tags {
   display: flex;
@@ -165,7 +168,7 @@ onMounted(fetchList)
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  color: #9ca3af;
+  color: var(--text-muted);
   font-size: 14px;
 }
 </style>
