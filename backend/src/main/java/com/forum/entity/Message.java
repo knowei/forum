@@ -16,5 +16,6 @@ public class Message {
     private Long conversationId;
     private Long senderId;
     private String content;
+    private Boolean isRead;
     private LocalDateTime createTime;
 }

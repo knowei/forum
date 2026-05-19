@@ -136,5 +136,7 @@ public class MessageServiceImpl implements MessageService {
             conversation.setUser2Unread(0);
             conversationMapper.updateById(conversation);
         }
+
+        messageMapper.markMessagesRead(conversationId, userId);
     }
 }

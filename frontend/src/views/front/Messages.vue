@@ -60,7 +60,10 @@
               </el-avatar>
               <div class="msg-item__content">
                 <div class="msg-bubble">{{ msg.content }}</div>
-                <div class="msg-time">{{ formatMsgTime(msg.createTime) }}</div>
+                <div class="msg-meta">
+                  <span class="msg-time">{{ formatMsgTime(msg.createTime) }}</span>
+                  <span v-if="msg.senderId === currentUserId && msg.isRead" class="msg-read-badge">✓✓</span>
+                </div>
               </div>
               <el-avatar v-if="msg.senderId === currentUserId" :size="28" :src="userStore.userInfo?.avatar">
                 {{ userStore.userInfo?.nickname?.[0] }}
@@ -547,7 +550,6 @@ async function loadNewMessages() {
 
 .msg-item--mine {
   align-self: flex-end;
-  flex-direction: row-reverse;
 }
 
 .msg-item__content {
@@ -584,6 +586,18 @@ async function loadNewMessages() {
   font-size: 11px;
   color: var(--text-muted, #9ca3af);
   padding: 0 6px;
+}
+
+.msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.msg-read-badge {
+  font-size: 11px;
+  color: #409eff;
+  line-height: 1;
 }
 
 /* ---- Back Button ---- */

@@ -12,4 +12,5 @@ public class MessageVO {
     private LocalDateTime createTime;
     private String senderNickname;
     private String senderAvatar;
+    private Boolean isRead;
 }

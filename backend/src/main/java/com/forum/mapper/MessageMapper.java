@@ -6,6 +6,7 @@ import com.forum.vo.MessageVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
 public interface MessageMapper extends BaseMapper<Message> {
 
     @Select("""
-            select m.id, m.sender_id as senderId, m.content, m.create_time as createTime,
+            select m.id, m.sender_id as senderId, m.content, m.is_read as isRead, m.create_time as createTime,
                    u.nickname as senderNickname, u.avatar as senderAvatar
             from message m
             join user u on u.id = m.sender_id
@@ -30,4 +31,12 @@ public interface MessageMapper extends BaseMapper<Message> {
             where conversation_id = #{conversationId}
             """)
     long countMessages(@Param("conversationId") Long conversationId);
+
+    @Update("""
+            update message set is_read = 1
+            where conversation_id = #{conversationId}
+              and sender_id != #{userId}
+              and is_read = 0
+            """)
+    int markMessagesRead(@Param("conversationId") Long conversationId, @Param("userId") Long userId);
 }
