@@ -12,5 +12,7 @@ public interface UserService {
 
     void updatePassword(String oldPassword, String newPassword);
 
+    void updateBgImage(String bgImageUrl);
+
     com.forum.vo.UserProfileVO getProfile(Long id);
 }

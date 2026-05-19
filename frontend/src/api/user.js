@@ -35,3 +35,7 @@ export function markAllNotificationsRead() {
 export function getUserProfile(id) {
   return request.get(`/user/${id}/profile`)
 }
+
+export function updateBgImage(bgImage) {
+  return request.put('/user/bg-image', { bgImage })
+}

@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService {
         userVO.setNickname(user.getNickname());
         userVO.setEmail(user.getEmail());
         userVO.setAvatar(user.getAvatar());
+        userVO.setBgImage(user.getBgImage());
         userVO.setRole(user.getRole());
         return userVO;
     }
@@ -88,6 +89,16 @@ public class UserServiceImpl implements UserService {
         update.setId(loginUser.getId());
         update.setPassword(passwordEncoder.encode(newPassword));
         userMapper.updateById(update);
+    }
+
+    @Override
+    @Transactional
+    public void updateBgImage(String bgImageUrl) {
+        LoginUser loginUser = getCurrentLoginUser();
+        User user = new User();
+        user.setId(loginUser.getId());
+        user.setBgImage(bgImageUrl);
+        userMapper.updateById(user);
     }
 
     @Override

@@ -101,6 +101,29 @@
 
             <el-divider />
 
+            <h3 class="settings-section-title">背景图片</h3>
+            <div class="bg-setting">
+              <div class="bg-preview" :style="{ backgroundImage: bgPreviewStyle }">
+                <div v-if="!userStore.userInfo?.bgImage" class="bg-preview__empty">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <span>未设置</span>
+                </div>
+              </div>
+              <div class="bg-actions">
+                <el-upload
+                  :show-file-list="false"
+                  accept="image/jpeg,image/png,image/gif,image/webp"
+                  :before-upload="handleBgUpload"
+                >
+                  <el-button size="small" type="primary">上传图片</el-button>
+                </el-upload>
+                <el-button v-if="userStore.userInfo?.bgImage" size="small" type="danger" plain @click="handleRemoveBg">移除背景</el-button>
+                <span class="bg-hint">建议尺寸 1920×1080，仅支持 jpg/png/webp</span>
+              </div>
+            </div>
+
+            <el-divider />
+
             <h3 class="settings-section-title">修改密码</h3>
             <el-form :model="passwordForm" label-width="100px">
               <el-form-item label="原密码">
@@ -129,7 +152,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { getMyResources, getMyCollections, deleteResource } from '@/api/resource'
 import { uploadImage } from '@/api/resource'
-import { updateUserAvatar, updateUserInfo, updatePassword } from '@/api/user'
+import { updateUserAvatar, updateUserInfo, updatePassword, updateBgImage } from '@/api/user'
 
 const userStore = useUserStore()
 const loading = ref(false)
@@ -144,6 +167,10 @@ const settingsForm = ref({ nickname: '', email: '' })
 const savingInfo = ref(false)
 const passwordForm = ref({ oldPassword: '', newPassword: '', confirmPassword: '' })
 const savingPassword = ref(false)
+
+const bgPreviewStyle = computed(() => {
+  return userStore.userInfo?.bgImage ? `url(${userStore.userInfo.bgImage})` : 'none'
+})
 
 const filteredList = computed(() => {
   if (resourceFilter.value === 'all') return list.value
@@ -184,6 +211,28 @@ async function handleAvatarUpload(file) {
     ElMessage.error('头像上传失败')
   }
   return false
+}
+
+async function handleBgUpload(file) {
+  try {
+    const { url } = await uploadImage(file, 'bg')
+    await updateBgImage(url)
+    await userStore.fetchUserInfo()
+    ElMessage.success('背景图片更新成功')
+  } catch {
+    ElMessage.error('背景图片上传失败')
+  }
+  return false
+}
+
+async function handleRemoveBg() {
+  try {
+    await updateBgImage('')
+    await userStore.fetchUserInfo()
+    ElMessage.success('背景图片已移除')
+  } catch {
+    ElMessage.error('移除失败')
+  }
 }
 
 watch(activeTab, (tab) => {
@@ -336,5 +385,47 @@ onMounted(fetchMyResources)
 .profile-role {
   color: #9ca3af;
   font-size: 14px;
+}
+
+.bg-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bg-preview {
+  width: 100%;
+  height: 140px;
+  border-radius: 10px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bg-hover, #f3f4f6);
+  border: 1px solid var(--border-light, #e5e7eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.bg-preview__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted, #9ca3af);
+  font-size: 13px;
+}
+
+.bg-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bg-hint {
+  font-size: 12px;
+  color: var(--text-muted, #9ca3af);
+  margin-left: 4px;
 }
 </style>

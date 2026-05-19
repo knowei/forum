@@ -57,6 +57,12 @@ public class UserController {
         return Result.success();
     }
 
+    @PutMapping("/bg-image")
+    public Result<Void> updateBgImage(@RequestBody Map<String, String> body) {
+        userService.updateBgImage(body.get("bgImage"));
+        return Result.success();
+    }
+
     @GetMapping("/{id}/profile")
     public Result<UserProfileVO> getProfile(@PathVariable Long id) {
         return Result.success(userService.getProfile(id));

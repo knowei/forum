@@ -13,6 +13,9 @@ CREATE TABLE IF NOT EXISTS `user` (
   INDEX idx_email (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Add bg_image column (error ignored if already exists)
+ALTER TABLE `user` ADD COLUMN `bg_image` VARCHAR(255) DEFAULT NULL AFTER `avatar`;
+
 CREATE TABLE IF NOT EXISTS `category` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,
   `name` VARCHAR(50) NOT NULL,
