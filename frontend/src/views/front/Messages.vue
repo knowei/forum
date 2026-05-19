@@ -155,7 +155,7 @@ watch(() => route.query.user, async (userId) => {
   if (userId) {
     await startConversation(Number(userId))
   }
-})
+}, { immediate: true })
 
 function formatTime(value) {
   if (!value) return ''
