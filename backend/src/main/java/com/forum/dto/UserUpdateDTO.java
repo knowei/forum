@@ -16,4 +16,7 @@ public class UserUpdateDTO {
     @NotBlank
     @Size(max = 100)
     private String email;
+
+    @Size(max = 500)
+    private String bio;
 }

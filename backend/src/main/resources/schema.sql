@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 -- Add bg_image column (error ignored if already exists)
 ALTER TABLE `user` ADD COLUMN `bg_image` VARCHAR(255) DEFAULT NULL AFTER `avatar`;
+ALTER TABLE `user` ADD COLUMN `bio` VARCHAR(500) DEFAULT NULL AFTER `bg_image`;
 
 CREATE TABLE IF NOT EXISTS `category` (
   `id` INT PRIMARY KEY AUTO_INCREMENT,

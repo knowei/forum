@@ -15,7 +15,7 @@ public interface UserMapper extends BaseMapper<User> {
     User findByEmail(String email);
 
     @Select("""
-            select u.id, u.username, u.nickname, u.avatar, u.role, u.create_time as createTime,
+            select u.id, u.username, u.nickname, u.avatar, u.bio, u.role, u.create_time as createTime,
                    (select count(*) from resource r where r.user_id = u.id and r.status = 1) as resourceCount,
                    (select coalesce(sum(r.view_count), 0) from resource r where r.user_id = u.id and r.status = 1) as totalViews
             from user u
@@ -24,7 +24,7 @@ public interface UserMapper extends BaseMapper<User> {
     com.forum.vo.UserProfileVO selectProfileById(Long id);
 
     @Select("""
-            select u.id, u.username, u.nickname, u.avatar, u.role, u.create_time as createTime,
+            select u.id, u.username, u.nickname, u.avatar, u.bio, u.role, u.create_time as createTime,
                    (select count(*) from resource r where r.user_id = u.id and r.status = 1) as resourceCount,
                    (select coalesce(sum(r.view_count), 0) from resource r where r.user_id = u.id and r.status = 1) as totalViews
             from user u

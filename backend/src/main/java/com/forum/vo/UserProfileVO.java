@@ -10,6 +10,7 @@ public class UserProfileVO {
     private String username;
     private String nickname;
     private String avatar;
+    private String bio;
     private Integer role;
     private LocalDateTime createTime;
     private Long resourceCount;

@@ -11,6 +11,7 @@
         </div>
         <h1 class="user-profile__name">{{ profile?.nickname || '未知用户' }}</h1>
         <p class="user-profile__username">@{{ profile?.username }}</p>
+        <p v-if="profile?.bio" class="user-profile__bio">{{ profile.bio }}</p>
         <div class="user-profile__stats">
           <div class="user-stat">
             <span class="user-stat__value">{{ profile?.resourceCount || 0 }}</span>
@@ -186,6 +187,16 @@ onMounted(loadAll)
   margin: 0 0 16px;
   font-size: 14px;
   color: var(--text-muted);
+}
+
+.user-profile__bio {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .user-profile__stats {
   display: flex;

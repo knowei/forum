@@ -8,7 +8,7 @@ public interface UserService {
 
     void updateAvatar(String avatarUrl);
 
-    void updateInfo(String nickname, String email);
+    void updateInfo(String nickname, String email, String bio);
 
     void updatePassword(String oldPassword, String newPassword);
 

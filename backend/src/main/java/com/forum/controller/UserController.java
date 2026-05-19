@@ -48,7 +48,7 @@ public class UserController {
 
     @PutMapping("/info")
     public Result<Void> updateInfo(@Valid @RequestBody UserUpdateDTO dto) {
-        userService.updateInfo(dto.getNickname(), dto.getEmail());
+        userService.updateInfo(dto.getNickname(), dto.getEmail(), dto.getBio());
         return Result.success();
     }
 

@@ -70,12 +70,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateInfo(String nickname, String email) {
+    public void updateInfo(String nickname, String email, String bio) {
         LoginUser loginUser = getCurrentLoginUser();
         User user = new User();
         user.setId(loginUser.getId());
         user.setNickname(nickname);
         user.setEmail(email);
+        user.setBio(bio);
         userMapper.updateById(user);
     }
 

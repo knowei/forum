@@ -94,6 +94,9 @@
               <el-form-item label="邮箱">
                 <el-input v-model="settingsForm.email" maxlength="100" />
               </el-form-item>
+              <el-form-item label="个人简介">
+                <el-input v-model="settingsForm.bio" type="textarea" :rows="3" maxlength="500" show-word-limit placeholder="介绍一下自己…" />
+              </el-form-item>
               <el-form-item>
                 <el-button type="primary" :loading="savingInfo" @click="handleSaveInfo">保存</el-button>
               </el-form-item>
@@ -239,7 +242,8 @@ watch(activeTab, (tab) => {
   if (tab === 'settings') {
     settingsForm.value = {
       nickname: userStore.userInfo?.nickname || '',
-      email: userStore.userInfo?.email || ''
+      email: userStore.userInfo?.email || '',
+      bio: userStore.userInfo?.bio || ''
     }
   }
   if (tab === 'collections' && !collections.value.length) {
@@ -256,7 +260,8 @@ async function handleSaveInfo() {
   try {
     await updateUserInfo({
       nickname: settingsForm.value.nickname.trim(),
-      email: settingsForm.value.email.trim()
+      email: settingsForm.value.email.trim(),
+      bio: settingsForm.value.bio?.trim() || ''
     })
     await userStore.fetchUserInfo()
     ElMessage.success('保存成功')

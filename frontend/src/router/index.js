@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import FrontLayout from '@/layouts/FrontLayout.vue'
-import AdminLayout from '@/layouts/AdminLayout.vue'
 import { useUserStore } from '@/stores/user'
 
 const router = createRouter({
@@ -8,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: FrontLayout,
+      component: () => import('@/layouts/FrontLayout.vue'),
       children: [
         { path: '', name: 'home', component: () => import('@/views/front/Home.vue') },
         { path: 'notes', name: 'notes', component: () => import('@/views/front/Notes.vue') },
@@ -25,7 +23,7 @@ const router = createRouter({
     { path: '/register', name: 'register', component: () => import('@/views/front/Register.vue') },
     {
       path: '/admin',
-      component: AdminLayout,
+      component: () => import('@/layouts/AdminLayout.vue'),
       meta: { requiresAuth: true, requiresAdmin: true },
       children: [
         { path: '', name: 'admin-dashboard', component: () => import('@/views/admin/Dashboard.vue') },
