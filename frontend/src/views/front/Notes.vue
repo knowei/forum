@@ -483,7 +483,7 @@ fetchNotes()
   cursor: pointer;
 }
 .note-card__header-user:hover .note-card__author {
-  color: #409eff;
+  color: var(--tint);
 }
 .note-card__avatar {
   border: 2px solid #f3e5f5;

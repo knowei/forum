@@ -2,7 +2,7 @@
   <div class="admin-layout">
     <aside class="admin-sidebar">
       <div class="admin-sidebar__header">
-        <RouterLink to="/" class="admin-logo">资源论坛</RouterLink>
+        <RouterLink to="/" class="admin-logo">柠檬网</RouterLink>
         <div class="admin-sidebar__title">管理后台</div>
       </div>
       <nav class="admin-sidebar__nav">
@@ -135,7 +135,10 @@ function handleLogout() {
   display: block;
   font-size: 18px;
   font-weight: 700;
-  color: #60a5fa;
+  background: linear-gradient(135deg, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 4px;
 }
 
@@ -184,13 +187,16 @@ function handleLogout() {
   align-items: center;
   height: 64px;
   padding: 0 24px;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg-header);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .admin-header__left {
   display: flex;
   align-items: center;
+  gap: 8px;
 }
 
 .admin-header__right {
@@ -201,7 +207,7 @@ function handleLogout() {
 
 .admin-header__user {
   font-size: 14px;
-  color: #374151;
+  color: var(--text-primary);
 }
 
 /* ---- Admin Hamburger ---- */
@@ -212,16 +218,17 @@ function handleLogout() {
   width: 32px;
   height: 32px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   background: transparent;
-  color: #6b7280;
+  color: var(--text-secondary);
   cursor: pointer;
   flex-shrink: 0;
+  transition: all 0.2s;
 }
 
 .admin-hamburger:hover {
-  background: #f3f4f6;
-  color: #409eff;
+  background: var(--bg-hover);
+  color: var(--tint);
 }
 
 /* ---- Admin Drawer Nav ---- */
@@ -229,12 +236,13 @@ function handleLogout() {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding: 8px 0;
 }
 
 .admin-drawer__divider {
-  height: 1px;
-  background: var(--border-light, #f0f0f0);
-  margin: 8px 0;
+  height: 0.5px;
+  background: var(--border-light);
+  margin: 8px 12px;
 }
 
 @media (max-width: 768px) {

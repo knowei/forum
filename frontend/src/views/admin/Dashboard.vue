@@ -155,7 +155,7 @@ onMounted(async () => {
   align-items: center;
   gap: 12px;
   padding: 8px 0;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .online-user-item:last-child {

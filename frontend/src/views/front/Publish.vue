@@ -238,8 +238,8 @@ onMounted(async () => {
 }
 
 .cover-upload__placeholder:hover {
-  border-color: #409eff;
-  color: #409eff;
+  border-color: var(--tint);
+  color: var(--tint);
 }
 
 .cover-upload__preview {

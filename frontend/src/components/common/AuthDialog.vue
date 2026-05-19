@@ -1,7 +1,7 @@
 <template>
   <el-dialog v-model="visible_" width="400px" top="18vh" :close-on-click-modal="false" destroy-on-close class="auth-dialog">
     <div class="auth-dialog__body">
-      <h1 class="auth-dialog__brand">资源论坛</h1>
+      <h1 class="auth-dialog__brand">柠檬网</h1>
 
       <el-form v-if="isLoginMode" :model="loginForm" @submit.prevent="handleLogin" class="auth-form">
         <el-form-item>
@@ -192,51 +192,58 @@ async function handleRegister() {
 
 .auth-dialog :deep(.el-dialog) {
   overscroll-behavior: contain;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  background: var(--bg-card);
+  -webkit-backdrop-filter: saturate(180%) blur(40px);
+  backdrop-filter: saturate(180%) blur(40px);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  box-shadow: var(--shadow-xl);
+  width: min(400px, calc(100vw - 32px));
 }
 
 .auth-dialog__body {
-  padding: 28px 32px 24px;
+  padding: 32px 28px 24px;
 }
 
 .auth-dialog__brand {
   text-align: center;
-  font-size: 26px;
-  font-weight: 700;
-  color: #409eff;
-  margin: 0 0 24px;
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 28px;
+  background: linear-gradient(135deg, var(--tint), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
 }
 
 .auth-form .el-form-item {
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .auth-input :deep(.el-input__wrapper) {
   box-shadow: none;
   border: none;
   border-radius: 0;
-  border-bottom: 1px solid #dcdfe6;
+  border-bottom: 1.5px solid var(--border);
   padding-left: 0;
   padding-right: 0;
   background: transparent;
+  transition: border-color 0.2s;
 }
 
 .auth-input :deep(.el-input__wrapper:hover) {
-  border-bottom-color: #409eff;
+  border-bottom-color: var(--tint);
 }
 
 .auth-input :deep(.el-input__wrapper.is-focus) {
-  border-bottom-color: #409eff;
+  border-bottom-color: var(--tint);
   box-shadow: none;
 }
 
 .auth-input :deep(.el-input__inner) {
   padding-left: 0;
+  font-size: 15px;
 }
 
 .auth-email-row {
@@ -252,20 +259,37 @@ async function handleRegister() {
 .auth-code-btn {
   flex-shrink: 0;
   height: 40px;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .auth-btn {
   width: 100%;
-  height: 44px;
-  border-radius: 22px;
+  height: 48px;
+  border-radius: 24px;
   font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.auth-btn:not(:disabled) {
+  background: var(--tint);
+  border-color: var(--tint);
 }
 
 .auth-dialog__footer {
-  margin-top: 20px;
+  margin-top: 22px;
   text-align: center;
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 14px;
+}
+
+.auth-dialog__footer .el-button {
+  color: var(--tint);
+  font-weight: 600;
+}
+
+/* Dark mode refinements */
+[data-theme='dark'] .auth-dialog :deep(.el-dialog) {
+  border-color: rgba(255, 255, 255, 0.08);
 }
 </style>

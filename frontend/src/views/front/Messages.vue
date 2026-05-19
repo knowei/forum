@@ -306,9 +306,9 @@ async function loadNewMessages() {
 .messages-container {
   display: flex;
   height: 100%;
-  background: var(--bg-card, #fff);
-  border-radius: 12px;
-  box-shadow: var(--shadow, 0 1px 3px rgba(0,0,0,.1));
+  background: var(--bg-card);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
@@ -479,7 +479,7 @@ async function loadNewMessages() {
 }
 
 .input-bar:focus-within {
-  border-color: #409eff;
+  border-color: var(--tint);
   background: var(--bg-card, #fff);
 }
 
@@ -523,7 +523,7 @@ async function loadNewMessages() {
 }
 
 .input-bar__send--active {
-  background: #409eff;
+  background: var(--tint);
 }
 
 .input-bar__send--active:hover:not(:disabled) {
@@ -568,12 +568,12 @@ async function loadNewMessages() {
   font-size: 14px;
   line-height: 1.5;
   word-break: break-word;
-  background: #f0f0f0;
-  color: #1f2937;
+  background: var(--bg-fill);
+  color: var(--text-primary);
 }
 
 .msg-item--mine .msg-bubble {
-  background: #409eff;
+  background: var(--tint);
   color: #fff;
   border-bottom-right-radius: 4px;
 }
@@ -596,7 +596,7 @@ async function loadNewMessages() {
 
 .msg-read-badge {
   font-size: 11px;
-  color: #409eff;
+  color: var(--tint);
   line-height: 1;
 }
 
@@ -617,7 +617,7 @@ async function loadNewMessages() {
 
 .chat-back-btn:hover {
   background: var(--bg-hover);
-  color: #409eff;
+  color: var(--tint);
 }
 
 /* ---- Mobile ---- */

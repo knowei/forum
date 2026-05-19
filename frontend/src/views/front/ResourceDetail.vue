@@ -545,8 +545,8 @@ onUnmounted(() => {
 }
 
 .action-float__btn:hover {
-  background: #f3f4f6;
-  color: #409eff;
+  background: var(--bg-hover);
+  color: var(--tint);
 }
 
 .action-float__btn.active {

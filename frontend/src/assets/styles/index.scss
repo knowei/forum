@@ -1,107 +1,226 @@
 @use 'sass:color';
 @use './pages.scss';
 
+/* ========================================
+   iOS 26 Design System
+   ======================================== */
+
 :root {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --bg: #f5f7fb;
-  --bg-card: #fff;
-  --bg-header: #fff;
-  --bg-hover: #f3f4f6;
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
-  --text-muted: #9ca3af;
-  --border: #e5e7eb;
-  --border-light: #f3f4f6;
-  --shadow: rgba(15, 23, 42, 0.06);
-  --shadow-hover: rgba(15, 23, 42, 0.08);
+  /* Font — use system SF Pro on Apple, fallback on others */
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
+    'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* iOS Light Palette */
+  --bg: #f2f2f7;
+  --bg-card: rgba(255, 255, 255, 0.92);
+  --bg-header: rgba(255, 255, 255, 0.75);
+  --bg-hover: rgba(60, 60, 67, 0.06);
+  --bg-fill: rgba(120, 120, 128, 0.08);
+
+  --text-primary: #1c1c1e;
+  --text-secondary: #636366;
+  --text-muted: #aeaeb2;
+
+  --border: rgba(60, 60, 67, 0.12);
+  --border-light: rgba(60, 60, 67, 0.06);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 16px 50px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  /* iOS Tint — the blue everyone knows */
+  --tint: #007aff;
+  --tint-hover: #0062cc;
+  --tint-active: #0052b3;
+  --tint-light: rgba(0, 122, 255, 0.08);
+  --tint-mid: rgba(0, 122, 255, 0.15);
+
+  /* iOS system colors (light) */
+  --red: #ff3b30;
+  --orange: #ff9500;
+  --yellow: #ffcc00;
+  --green: #34c759;
+  --mint: #00c7be;
+  --teal: #30b0c7;
+  --cyan: #32ade6;
+  --blue: #007aff;
+  --indigo: #5856d6;
+  --purple: #af52de;
+  --pink: #ff2d55;
+
+  /* Safe area */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
   color: var(--text-primary);
   background: var(--bg);
 }
 
+/* ========================================
+   Dark Mode
+   ======================================== */
 [data-theme='dark'] {
-  --bg: #0f0f1a;
-  --bg-card: #1a1a2e;
-  --bg-header: #16162a;
-  --bg-hover: #252538;
-  --text-primary: #e4e4f0;
-  --text-secondary: #9d9db5;
-  --text-muted: #6b6b85;
-  --border: #2d2d44;
-  --border-light: #252538;
-  --shadow: rgba(0, 0, 0, 0.2);
-  --shadow-hover: rgba(0, 0, 0, 0.3);
+  --bg: #000000;
+  --bg-card: rgba(28, 28, 30, 0.92);
+  --bg-header: rgba(0, 0, 0, 0.78);
+  --bg-hover: rgba(255, 255, 255, 0.08);
+  --bg-fill: rgba(120, 120, 128, 0.16);
+
+  --text-primary: #f5f5f7;
+  --text-secondary: #98989d;
+  --text-muted: #636366;
+
+  --border: rgba(255, 255, 255, 0.12);
+  --border-light: rgba(255, 255, 255, 0.06);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.35), 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 16px 50px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.25);
+
+  --tint: #0a84ff;
+  --tint-hover: #409cff;
+  --tint-active: #5eabff;
+  --tint-light: rgba(10, 132, 255, 0.12);
+  --tint-mid: rgba(10, 132, 255, 0.2);
+
+  /* System colors — dark mode variant */
+  --red: #ff453a;
+  --orange: #ff9f0a;
+  --yellow: #ffd60a;
+  --green: #30d158;
+  --blue: #0a84ff;
 
   /* Element Plus overrides */
-  --el-bg-color: #0f0f1a;
-  --el-bg-color-overlay: #1a1a2e;
-  --el-bg-color-page: #0f0f1a;
-  --el-text-color-primary: #e4e4f0;
-  --el-text-color-regular: #9d9db5;
-  --el-text-color-secondary: #6b6b85;
-  --el-border-color: #2d2d44;
-  --el-border-color-light: #252538;
-  --el-border-color-lighter: #252538;
-  --el-fill-color: #252538;
-  --el-fill-color-light: #1e1e32;
-  --el-fill-color-lighter: #1a1a2e;
-  --el-mask-color: rgba(0, 0, 0, 0.5);
+  --el-bg-color: #000000;
+  --el-bg-color-overlay: rgba(28, 28, 30, 0.92);
+  --el-bg-color-page: #000000;
+  --el-text-color-primary: #f5f5f7;
+  --el-text-color-regular: #98989d;
+  --el-text-color-secondary: #636366;
+  --el-border-color: rgba(255, 255, 255, 0.12);
+  --el-border-color-light: rgba(255, 255, 255, 0.06);
+  --el-border-color-lighter: rgba(255, 255, 255, 0.04);
+  --el-fill-color: rgba(120, 120, 128, 0.16);
+  --el-fill-color-light: rgba(120, 120, 128, 0.12);
+  --el-fill-color-lighter: rgba(120, 120, 128, 0.08);
+  --el-mask-color: rgba(0, 0, 0, 0.6);
 }
 
-* { box-sizing: border-box; }
+/* ========================================
+   Base Reset
+   ======================================== */
+*, *::before, *::after { box-sizing: border-box; }
 
 body {
   margin: 0;
   background: var(--bg);
   color: var(--text-primary);
   -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
 }
 
 a { color: inherit; text-decoration: none; }
 
+/* ========================================
+   Layout
+   ======================================== */
 .container {
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
 }
 
+.content-area {
+  padding: 88px 0 40px;
+}
+
+/* ========================================
+   Glass Header — iOS 26 style
+   ======================================== */
 .site-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   background: var(--bg-header);
-  border-bottom: 1px solid var(--border);
-  transition: transform 0.3s ease;
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border-light);
+  transition: transform 0.35s cubic-bezier(0.32, 0.94, 0.6, 1);
 }
-.site-header.header-hidden { transform: translateY(-100%); }
+.site-header.header-hidden {
+  transform: translateY(-100%);
+}
 
 .header-inner {
-  display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 64px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 56px;
 }
 
-.logo { font-size: 20px; font-weight: 700; color: #409eff; }
+.logo {
+  font-size: 20px; font-weight: 700;
+  background: linear-gradient(135deg, var(--tint), var(--purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
 .nav-links, .header-actions { display: flex; align-items: center; gap: 16px; }
 
-.nickname { color: var(--text-secondary); }
-
-.content-area { padding: 88px 0 40px; }
-
-.page-card, .panel-card {
-  background: var(--bg-card);
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 10px 30px var(--shadow);
-  animation: card-in 0.35s ease both;
+.nav-links a,
+.nav-links .nav-btn {
+  position: relative;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+  padding: 4px 0;
+}
+.nav-links a:hover,
+.nav-links .nav-btn:hover {
+  color: var(--tint);
+}
+.nav-links a.router-link-active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+/* iOS underline indicator */
+.nav-links a.router-link-active::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 2.5px;
+  border-radius: 2px;
+  background: var(--tint);
 }
 
-@keyframes card-in {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+.nickname { color: var(--text-secondary); }
+
+/* ========================================
+   Cards — iOS rounded + shadow layers
+   ======================================== */
+.page-card, .panel-card {
+  background: var(--bg-card);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  animation: ios-card-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+@keyframes ios-card-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .page-card, .panel-card { animation: none; }
   .fade-slide-enter-active, .fade-slide-leave-active,
-  .fade-enter-active, .fade-leave-active, .back-top-btn { transition: none; }
+  .fade-enter-active, .fade-leave-active { transition: none !important; }
 }
 
+/* ========================================
+   Resource Grid — iOS refined
+   ======================================== */
 .resource-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -113,29 +232,40 @@ a { color: inherit; text-decoration: none; }
 .resource-card {
   display: flex; flex-direction: column;
   background: var(--bg-card);
-  border-radius: 12px;
-  border: 1px solid var(--border);
+  border-radius: 16px;
+  border: 1px solid var(--border-light);
   overflow: hidden;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.25s ease;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 .resource-card:hover {
-  transform: translateY(-2px);
-  border-color: #cfe3ff;
-  box-shadow: 0 16px 30px var(--shadow-hover);
+  transform: translateY(-4px);
+  border-color: transparent;
+  box-shadow: var(--shadow-lg);
 }
 
-.resource-card__cover-wrap { position: relative; overflow: hidden; background: var(--bg-hover); }
+.resource-card__cover-wrap { position: relative; overflow: hidden; background: var(--bg-fill); }
 .resource-card__cover, .resource-card__cover-placeholder {
   width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.resource-card:hover .resource-card__cover {
+  transform: scale(1.03);
 }
 .resource-card__cover-placeholder { display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
-.resource-card__body { padding: 12px; display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.resource-card__body { padding: 14px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 .resource-card__title { font-size: 15px; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .resource-card__tags { display: flex; flex-wrap: wrap; gap: 4px; min-height: 22px; }
 .resource-card__meta { display: flex; justify-content: space-between; align-items: center; margin-top: auto; color: var(--text-muted); font-size: 12px; padding-top: 4px; }
 
 .resource-meta { display: flex; flex-wrap: wrap; gap: 12px; color: var(--text-secondary); font-size: 14px; }
 
+/* ========================================
+   Admin Layout
+   ======================================== */
 .admin-layout { min-height: 100vh; display: grid; grid-template-columns: 220px 1fr; }
 .admin-sidebar { display: flex; flex-direction: column; gap: 16px; padding: 24px; background: #111827; color: #fff; }
 .admin-title { font-size: 20px; font-weight: 700; }
@@ -143,31 +273,151 @@ a { color: inherit; text-decoration: none; }
 .admin-header { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 24px; background: var(--bg-card); border-bottom: 1px solid var(--border); }
 .admin-content { padding: 24px; }
 
-.auth-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
-.auth-card { width: min(420px, 100%); background: var(--bg-card); border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px var(--shadow); }
-.auth-title { margin: 0 0 24px; font-size: 24px; text-align: center; }
-
-.markdown-body { background: var(--bg-card); color: var(--text-primary); }
-.editor-shell { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-
-/* ---- Back to Top ---- */
-.back-top-btn {
-  position: fixed; right: 32px; bottom: 40px; z-index: 200;
-  width: 44px; height: 44px; border-radius: 50%; border: none;
-  background: #409eff; color: #fff;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 14px rgba(64, 158, 255, 0.35);
-  transition: background 0.2s, transform 0.2s;
+/* ========================================
+   Auth Page
+   ======================================== */
+.auth-page { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: linear-gradient(135deg, var(--tint) 0%, var(--purple) 100%); }
+.auth-card {
+  width: min(420px, 100%);
+  background: var(--bg-card);
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: var(--shadow-xl);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
 }
-.back-top-btn:hover { background: #1677ff; transform: translateY(-2px); }
+.auth-title { margin: 0 0 24px; font-size: 28px; font-weight: 700; text-align: center; }
 
-/* ---- Route Transitions ---- */
-.fade-slide-enter-active, .fade-slide-leave-active { transition: opacity 0.25s ease, transform 0.25s ease; }
-.fade-slide-enter-from { opacity: 0; transform: translateY(12px); }
-.fade-slide-leave-to { opacity: 0; transform: translateY(-12px); }
-.fade-enter-active, .fade-leave-active { transition: opacity 0.2s ease; }
+/* ========================================
+   Markdown / Editor
+   ======================================== */
+.markdown-body { background: transparent; color: var(--text-primary); }
+.editor-shell { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+
+/* ========================================
+   iOS Back to Top — pill shape
+   ======================================== */
+.back-top-btn {
+  position: fixed; right: 28px; bottom: 40px; z-index: 200;
+  height: 40px; padding: 0 18px; border-radius: 20px; border: none;
+  background: var(--bg-card);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  color: var(--tint);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; gap: 6px;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s ease;
+}
+.back-top-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+.back-top-btn::before {
+  content: '';
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-top: 2px solid var(--tint);
+  border-left: 2px solid var(--tint);
+  transform: rotate(45deg);
+  margin-top: 4px;
+}
+
+/* ========================================
+   Route Transitions — iOS spring feel
+   ======================================== */
+.fade-slide-enter-active {
+  transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fade-slide-leave-active {
+  transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.fade-slide-enter-from { opacity: 0; transform: translateY(16px) scale(0.98); }
+.fade-slide-leave-to { opacity: 0; transform: translateY(-8px); }
+
+.fade-enter-active { transition: opacity 0.2s ease; }
+.fade-leave-active { transition: opacity 0.15s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 
+/* ========================================
+   iOS 26 Message Box (logout, confirm)
+   ======================================== */
+.el-message-box {
+  border-radius: 20px !important;
+  padding: 24px 0 0 !important;
+  max-width: min(320px, calc(100vw - 32px)) !important;
+  background: var(--bg-card) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(40px);
+  backdrop-filter: saturate(180%) blur(40px);
+  border: 1px solid var(--border-light) !important;
+  box-shadow: var(--shadow-xl) !important;
+}
+
+.el-message-box__header {
+  padding: 0 24px 16px !important;
+}
+
+.el-message-box__title {
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  text-align: center;
+  display: block;
+}
+
+.el-message-box__content {
+  padding: 0 24px 20px !important;
+}
+
+.el-message-box__message {
+  text-align: center;
+  font-size: 14px !important;
+  color: var(--text-secondary) !important;
+  line-height: 1.5;
+}
+
+.el-message-box__btns {
+  padding: 0 !important;
+  display: flex;
+  border-top: 0.5px solid var(--border-light) !important;
+}
+
+.el-message-box__btns .el-button {
+  flex: 1;
+  height: 52px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+.el-message-box__btns .el-button + .el-button {
+  border-left: 0.5px solid var(--border-light) !important;
+}
+
+.el-message-box__btns .el-button--primary {
+  color: var(--tint) !important;
+  font-weight: 700 !important;
+}
+
+.el-message-box__btns .el-button:hover {
+  background: var(--bg-hover) !important;
+}
+
+/* iOS close button override */
+.el-message-box__headerbtn {
+  display: none !important;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
 @media (max-width: 900px) {
   .home-hero, .detail-header__top, .resource-toolbar { flex-direction: column; align-items: flex-start; }
   .detail-layout { grid-template-columns: 1fr; }
@@ -176,17 +426,12 @@ a { color: inherit; text-decoration: none; }
   .admin-sidebar { flex-direction: row; flex-wrap: wrap; }
 }
 
-/* ---- Responsive ---- */
 @media (max-width: 768px) {
-  .container {
-    width: calc(100% - 20px);
-  }
-  .content-area {
-    padding: 80px 0 24px;
-  }
+  .container { width: calc(100% - 20px); }
+  .content-area { padding: 72px 0 20px; }
   .page-card, .panel-card {
     padding: 16px;
-    border-radius: 10px;
+    border-radius: 14px;
   }
   .resource-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -195,27 +440,26 @@ a { color: inherit; text-decoration: none; }
   .back-top-btn {
     right: 16px;
     bottom: 24px;
-    width: 40px;
-    height: 40px;
+    height: 36px;
+    padding: 0 14px;
+    font-size: 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .content-area {
-    padding: 72px 0 16px;
-  }
+  .content-area { padding: 64px 0 12px; }
   .resource-grid {
     grid-template-columns: 1fr;
     gap: 10px;
   }
   .page-card, .panel-card {
     padding: 12px;
-    border-radius: 8px;
+    border-radius: 12px;
   }
   .back-top-btn {
-    width: 36px;
-    height: 36px;
+    height: 32px;
+    padding: 0 12px;
     right: 12px;
-    bottom: 20px;
+    bottom: 16px;
   }
 }

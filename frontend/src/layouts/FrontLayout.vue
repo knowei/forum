@@ -5,7 +5,7 @@
         <button class="hamburger" aria-label="导航菜单" @click="drawerVisible = true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
-        <RouterLink class="logo" to="/">资源论坛</RouterLink>
+        <RouterLink class="logo" to="/">柠檬网</RouterLink>
         <nav class="nav-links">
           <RouterLink to="/">首页</RouterLink>
           <RouterLink to="/notes">随手记</RouterLink>
@@ -311,41 +311,41 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* ---- iOS Search Bar ---- */
 .header-search {
   flex: 0 0 400px;
 }
 
 .header-search .el-input {
-  --el-input-height: 40px;
-  --el-input-border-radius: 8px;
-  --el-input-border-color: #e5e7eb;
-  --el-input-hover-border-color: #409eff;
-  --el-input-focus-border-color: #409eff;
-  --el-input-bg-color: #f3f4f6;
-  --el-input-hover-bg-color: #fff;
-  --el-input-focus-bg-color: #fff;
-  --el-input-text-color: #1f2937;
-  --el-input-placeholder-color: #9ca3af;
+  --el-input-height: 36px;
+  --el-input-border-radius: 10px;
+  --el-input-border-color: transparent;
+  --el-input-hover-border-color: transparent;
+  --el-input-focus-border-color: var(--tint);
+  --el-input-bg-color: var(--bg-fill);
+  --el-input-hover-bg-color: var(--bg-fill);
+  --el-input-focus-bg-color: var(--bg-card);
+  --el-input-text-color: var(--text-primary);
+  --el-input-placeholder-color: var(--text-muted);
   transition: background-color 0.2s, border-color 0.2s;
-}
-
-.header-search .el-input:hover {
-  --el-input-bg-color: #fff;
 }
 
 .header-search .el-input :deep(.el-input__wrapper) {
   padding-right: 4px;
+  box-shadow: none !important;
 }
 
 .search-btn {
-  height: 32px;
-  border-radius: 6px;
+  height: 28px;
+  border-radius: 7px;
+  font-size: 12px;
 }
 
+/* ---- Header Actions ---- */
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .nav-btn {
@@ -360,7 +360,7 @@ onUnmounted(() => {
 }
 
 .nav-btn:hover {
-  color: #409eff;
+  color: var(--tint);
 }
 
 .theme-toggle {
@@ -371,25 +371,25 @@ onUnmounted(() => {
 }
 .theme-toggle:hover {
   background: var(--bg-hover);
-  color: #409eff;
+  color: var(--tint);
 }
 
-/* ---- Notifications ---- */
+/* ---- Notifications (iOS style) ---- */
 .notif-badge {
-  margin-right: 4px;
+  margin-right: 2px;
 }
 
 .notif-btn {
   border: none;
   background: transparent;
-  color: #6b7280;
+  color: var(--text-secondary);
   width: 32px;
   height: 32px;
 }
 
 .notif-btn:hover {
-  background: #f3f4f6;
-  color: #409eff;
+  background: var(--bg-hover);
+  color: var(--tint);
 }
 
 .notif-popover__header {
@@ -397,13 +397,13 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 10px;
+  border-bottom: 0.5px solid var(--border-light);
 }
 
 .notif-popover__title {
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: 700;
+  font-size: 16px;
 }
 
 .notif-list {
@@ -415,36 +415,36 @@ onUnmounted(() => {
 
 .notif-item {
   display: flex;
-  gap: 8px;
-  padding: 10px 0;
+  gap: 10px;
+  padding: 12px;
   cursor: pointer;
-  border-bottom: 1px solid #f9fafb;
+  border-bottom: 0.5px solid var(--border-light);
   transition: background 0.15s;
+  border-radius: 8px;
+  margin: 0 -12px;
+}
+
+.notif-item:last-child {
+  border-bottom: none;
 }
 
 .notif-item:hover {
-  background: #f9fafb;
-  margin: 0 -12px;
-  padding: 10px 12px;
-  border-radius: 6px;
+  background: var(--bg-hover);
 }
 
 .notif-item--unread {
-  background: #f0f7ff;
-  margin: 0 -12px;
-  padding: 10px 12px;
-  border-radius: 6px;
+  background: var(--tint-light);
 }
 
 .notif-item--unread:hover {
-  background: #e6f0fa;
+  background: var(--tint-mid);
 }
 
 .notif-item__dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #409eff;
+  background: var(--tint);
   flex-shrink: 0;
   margin-top: 6px;
 }
@@ -457,12 +457,12 @@ onUnmounted(() => {
 .notif-item__title {
   font-size: 13px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 .notif-item__content {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-secondary);
   margin-top: 2px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -473,7 +473,7 @@ onUnmounted(() => {
 
 .notif-item__time {
   font-size: 11px;
-  color: #9ca3af;
+  color: var(--text-muted);
   margin-top: 4px;
 }
 
@@ -487,12 +487,12 @@ onUnmounted(() => {
   font-size: 11px;
   font-weight: 600;
   color: #fff;
-  background: #f56c6c;
+  background: var(--red);
   border-radius: 8px;
   margin-left: 2px;
 }
 
-/* ---- Hamburger ---- */
+/* ---- Hamburger (iOS) ---- */
 .hamburger {
   display: none;
   align-items: center;
@@ -500,28 +500,35 @@ onUnmounted(() => {
   width: 36px;
   height: 36px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
   flex-shrink: 0;
+  transition: all 0.2s;
 }
 
 .hamburger:hover {
   background: var(--bg-hover);
-  color: #409eff;
+  color: var(--tint);
 }
 
-/* ---- Mobile Drawer ---- */
+/* ---- Mobile Drawer (iOS style) ---- */
 .mobile-drawer__body {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   height: 100%;
+  padding: 8px 0;
 }
 
 .mobile-drawer__search {
   flex-shrink: 0;
+  padding: 0 12px;
+}
+
+.mobile-drawer__search .el-input {
+  --el-input-border-radius: 10px;
 }
 
 .mobile-drawer__nav {
@@ -529,21 +536,23 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding: 0 12px;
 }
 
 .mobile-nav-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 15px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 500;
   color: var(--text-primary);
   transition: background 0.15s;
 }
 
 .mobile-nav-item:hover {
   background: var(--bg-hover);
-  color: #409eff;
+  color: var(--tint);
 }
 
 .mobile-nav-item--btn {
@@ -557,21 +566,23 @@ onUnmounted(() => {
 
 .mobile-drawer__footer {
   flex-shrink: 0;
-  padding-top: 12px;
-  border-top: 1px solid var(--border-light);
+  padding: 16px 12px 0;
+  border-top: 0.5px solid var(--border-light);
 }
 
 .mobile-drawer__user {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
-  font-size: 14px;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--text-primary);
 }
 
 .mobile-drawer__logout {
   width: 100%;
+  --el-button-border-radius: 12px;
 }
 
 .mobile-drawer__auth {
@@ -581,8 +592,25 @@ onUnmounted(() => {
 
 .mobile-drawer__auth .el-button {
   flex: 1;
+  --el-button-border-radius: 12px;
 }
 
+/* ---- iOS 26 Header Actions (login/register pills) ---- */
+.header-actions :deep(.el-button.link-login),
+.header-actions :deep(.el-button.link-register) {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.header-actions :deep(.el-button.link-login) {
+  color: var(--tint);
+}
+
+.header-actions :deep(.el-button.link-register) {
+  color: var(--tint);
+}
+
+/* ---- Responsive ---- */
 @media (max-width: 768px) {
   .hamburger {
     display: flex;

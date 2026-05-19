@@ -206,8 +206,8 @@ onMounted(() => {
 }
 
 .user-card:hover {
-  border-color: #409eff;
-  box-shadow: 0 2px 8px rgba(64, 158, 255, 0.1);
+  border-color: var(--tint);
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.1);
 }
 
 .user-card__info {

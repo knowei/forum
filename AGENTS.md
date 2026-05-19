@@ -1,4 +1,4 @@
-# AGENTS.md — 资源论坛系统
+# AGENTS.md — 柠檬网
 
 ## Repo structure
 
